@@ -1,0 +1,35 @@
+{
+	"name": "@ai-experiments/eslint-import-resolver",
+	"version": "0.0.1",
+	"description": "Custom ESLint resolver for this monorepo",
+	"private": true,
+	"author": "",
+	"license": "Apache-2.0",
+	"keywords": [
+		"eslint",
+		"eslint-import-resolver",
+		"eslint-plugin-import"
+	],
+	"homepage": "https://github.com/swissspidy/ai-experiments/tree/HEAD/packages/eslint-import-resolver/README.md",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/swissspidy/ai-experiments.git",
+		"directory": "packages/eslint-import-resolver"
+	},
+	"bugs": {
+		"url": "https://github.com/swissspidy/ai-experiments/issues"
+	},
+	"engines": {
+		"node": ">=20"
+	},
+	"main": "src/index.js",
+	"source": "src/index.js",
+	"exports": {
+		".": {
+			"default": "./src/index.js"
+		}
+	},
+	"dependencies": {
+		"eslint-import-resolver-node": "^0.3.9"
+	}
+}

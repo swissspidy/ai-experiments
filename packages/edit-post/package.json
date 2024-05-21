@@ -1,0 +1,45 @@
+{
+	"name": "@ai-experiments/edit-post",
+	"version": "0.0.1",
+	"description": "Main WordPress post editor integration",
+	"private": true,
+	"author": "",
+	"license": "GPL-2.0-or-later",
+	"keywords": [
+		"wordpress",
+		"gutenberg",
+		"media",
+		"editor",
+		"post"
+	],
+	"homepage": "https://github.com/swissspidy/ai-eexperiments/tree/HEAD/packages/edit-post/README.md",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/swissspidy/ai-eexperiments.git",
+		"directory": "packages/edit-post"
+	},
+	"bugs": {
+		"url": "https://github.com/swissspidy/ai-eexperiments/issues"
+	},
+	"engines": {
+		"node": ">=20"
+	},
+	"main": "dist/index.js",
+	"types": "dist-types/index.d.ts",
+	"source": "src/index.ts",
+	"exports": {
+		".": {
+			"default": "./src/index.ts"
+		}
+	},
+	"dependencies": {
+		"@wordpress/block-editor": "^12.25.0",
+		"@wordpress/blocks": "^12.10.0",
+		"@wordpress/components": "^27.0.0",
+		"@wordpress/data": "^9.6.0",
+		"@wordpress/editor": "^13.13.0",
+		"@wordpress/element": "^5.22.0",
+		"@wordpress/i18n": "^4.33.0",
+		"@wordpress/plugins": "^6.13.0"
+	}
+}

@@ -1,0 +1,33 @@
+version: 2
+updates:
+    - package-ecosystem: github-actions
+      directory: '/'
+      schedule:
+          interval: weekly
+      open-pull-requests-limit: 10
+      labels:
+          - Dependencies
+      groups:
+          github-actions:
+              patterns:
+                  - '*'
+
+    - package-ecosystem: npm
+      directory: '/'
+      schedule:
+          interval: weekly
+      open-pull-requests-limit: 10
+      labels:
+          - Dependencies
+      groups:
+          wp-packages:
+              patterns:
+                  - '@wordpress/*'
+
+    - package-ecosystem: composer
+      directory: '/'
+      schedule:
+          interval: weekly
+      open-pull-requests-limit: 10
+      labels:
+          - Dependencies

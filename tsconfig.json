@@ -1,0 +1,8 @@
+{
+	"references": [
+		{
+			"path": "packages/edit-post"
+		}
+	],
+	"files": []
+}
