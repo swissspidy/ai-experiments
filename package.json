@@ -39,7 +39,7 @@
 		"@wordpress/eslint-plugin": "^18.0.0",
 		"@wordpress/scripts": "^27.8.0",
 		"eslint": "^8.57.0",
-		"eslint-plugin-oxlint": "^0.2.9",
+		"eslint-plugin-oxlint": "^0.3.0",
 		"oxlint": "^0.3.4",
 		"prettier": "npm:wp-prettier@^3.0.3",
 		"typescript": "^5.4.5",
