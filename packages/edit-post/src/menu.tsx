@@ -64,57 +64,60 @@ const DEFAULT_QUERY = {
 
 export function Menu() {
 	const { editPost } = useDispatch( editorStore );
-	const { updateBlock } = useDispatch( blockEditorStore );
-	const {
-		getBlocks,
-		getSelectedBlock,
-		getSelectedBlockClientId,
-		postType,
-		taxonomies,
-		termsPerTaxonomy,
-	} = useSelect( ( select ) => {
-		const { getEntityRecords, getTaxonomies } = select( coreStore );
+	const { getBlocks, taxonomies, termsPerTaxonomy } = useSelect(
+		( select ) => {
+			// @ts-ignore
+			const { getEntityRecords, getTaxonomies } = select( coreStore );
 
-		// @ts-ignore
-		const _taxonomies = getTaxonomies( {
-			per_page: -1,
-		} );
-		const visibleTaxonomies = ( _taxonomies ?? [] ).filter(
-			( taxonomy: {
-				types: string[];
-				visibility?: { show_ui: boolean };
-			} ) =>
-				// In some circumstances .visibility can end up as undefined so optional chaining operator required.
-				// https://github.com/WordPress/gutenberg/issues/40326
-				taxonomy.types.includes( postType ) &&
-				taxonomy.visibility?.show_ui
-		);
-		return {
-			getBlocks: select( blockEditorStore ).getBlocks,
-			getSelectedBlock: select( blockEditorStore ).getSelectedBlock,
-			getSelectedBlockClientId:
-				select( blockEditorStore ).getSelectedBlockClientId,
-			postType: select( editorStore ).getCurrentPostType(),
-			taxonomies: visibleTaxonomies,
-			termsPerTaxonomy: Object.fromEntries(
-				visibleTaxonomies.map( ( { slug } ) => {
-					return [
-						slug,
-						getEntityRecords( 'taxonomy', slug, DEFAULT_QUERY ),
-					];
-				} )
-			),
-		};
-	}, [] );
+			// @ts-ignore
+			const postType = select( editorStore ).getCurrentPostType();
+
+			// @ts-ignore
+			const _taxonomies = getTaxonomies( {
+				per_page: -1,
+			} );
+			const visibleTaxonomies = ( _taxonomies ?? [] ).filter(
+				( taxonomy: {
+					types: string[];
+					visibility?: { show_ui: boolean };
+				} ) =>
+					// In some circumstances .visibility can end up as undefined so optional chaining operator required.
+					// https://github.com/WordPress/gutenberg/issues/40326
+					taxonomy.types.includes( postType ) &&
+					taxonomy.visibility?.show_ui
+			);
+			return {
+				// @ts-ignore
+				getBlocks: select( blockEditorStore ).getBlocks,
+				// @ts-ignore
+				getSelectedBlock: select( blockEditorStore ).getSelectedBlock,
+				getSelectedBlockClientId:
+					// @ts-ignore
+					select( blockEditorStore ).getSelectedBlockClientId,
+				taxonomies: visibleTaxonomies,
+				termsPerTaxonomy: Object.fromEntries(
+					visibleTaxonomies.map( ( { slug }: { slug: string } ) => {
+						return [
+							slug,
+							getEntityRecords( 'taxonomy', slug, DEFAULT_QUERY ),
+						];
+					} )
+				),
+			};
+		},
+		[]
+	);
 
 	const termsList = (
-		taxonomies?.map( ( { name: taxonomy, slug } ) => {
-			return `${ taxonomy }:\n\n${
-				termsPerTaxonomy[ slug ]
-					?.map( ( { name: term } ) => term )
-					.join( '\n' ) || ''
-			}`;
-		} ) || []
+		taxonomies?.map(
+			( { name: taxonomy, slug }: { name: string; slug: string } ) => {
+				return `${ taxonomy }:\n\n${
+					termsPerTaxonomy[ slug ]
+						?.map( ( { name: term }: { name: string } ) => term )
+						.join( '\n' ) || ''
+				}`;
+			}
+		) || []
 	).join( '\n\n' );
 
 	const [ inProgress, setInProgress ] = useState( false );
@@ -132,7 +135,7 @@ export function Menu() {
 
 							const postContent =
 								new window.DOMParser().parseFromString(
-									serialize( [ getSelectedBlock() ] ),
+									serialize( getBlocks() ),
 									'text/html'
 								).body.textContent || '';
 
@@ -143,16 +146,23 @@ export function Menu() {
 								`Summarise the following text in full sentences in less than 300 characters: ${ postContent }`
 							);
 
+							const textArea: HTMLTextAreaElement | null =
+								document.querySelector(
+									'.editor-post-excerpt textarea'
+								);
+
 							let result = '';
 
 							for await ( const value of stream ) {
 								// Each result contains the full data, not just the incremental part.
 								result = value;
+
+								if ( textArea ) {
+									textArea.value = value;
+								}
 							}
 
 							result = result.replaceAll( '\n\n\n\n', '\n\n' );
-
-							console.log( result );
 
 							editPost( { excerpt: result } );
 
@@ -205,46 +215,6 @@ export function Menu() {
 						},
 					},
 					{
-						title: __( 'Rephrase paragraph', 'ai-experiments' ),
-						icon: penSparkIcon,
-						isDisabled: inProgress,
-						onClick: async () => {
-							setInProgress( true );
-
-							const postContent =
-								new window.DOMParser().parseFromString(
-									serialize( [ getSelectedBlock() ] ),
-									'text/html'
-								).body.textContent || '';
-
-							const session =
-								await window.model.createGenericSession();
-
-							const stream = session.executeStreaming(
-								`Rephrase the following paragraph: ${ postContent }`
-							);
-
-							let result = '';
-
-							for await ( const value of stream ) {
-								// Each result contains the full data, not just the incremental part.
-								result = value;
-							}
-
-							result = result.replaceAll( '\n\n\n\n', '\n\n' );
-
-							console.log( result );
-
-							void updateBlock( getSelectedBlockClientId(), {
-								attributes: {
-									content: result,
-								},
-							} );
-
-							setInProgress( false );
-						},
-					},
-					{
 						title: __( 'Sentiment analysis', 'ai-experiments' ),
 						icon: lightBulbTipsIcon,
 						isDisabled: inProgress,
@@ -270,10 +240,6 @@ export function Menu() {
 								// Each result contains the full data, not just the incremental part.
 								result = value;
 							}
-
-							// For some reason the result includes a summary as well, not just the word we're looking for.
-							// TODO: Improve prompt.
-							result = result.split( '\n' ).pop() || 'unknown';
 
 							console.log( result );
 

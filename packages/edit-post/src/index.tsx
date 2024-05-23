@@ -1,9 +1,24 @@
-import { createPortal, useLayoutEffect, useRef } from '@wordpress/element';
-import { useSelect } from '@wordpress/data';
+import {
+	createPortal,
+	Fragment,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from '@wordpress/element';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { registerPlugin } from '@wordpress/plugins';
 import { store as editorStore } from '@wordpress/editor';
+import { addFilter } from '@wordpress/hooks';
+import { createHigherOrderComponent } from '@wordpress/compose';
+import {
+	BlockControls,
+	store as blockEditorStore,
+} from '@wordpress/block-editor';
+import { ToolbarButton } from '@wordpress/components';
 
 import { Menu } from './menu';
+import { serialize } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 
 function WrappedMenu() {
 	const root = useRef< HTMLDivElement | null >( null );
@@ -11,6 +26,7 @@ function WrappedMenu() {
 
 	const { isEditedPostSaveable } = useSelect( ( select ) => {
 		return {
+			// @ts-ignore
 			isEditedPostSaveable: select( editorStore ).isEditedPostSaveable(),
 		};
 	}, [] );
@@ -47,3 +63,108 @@ function WrappedMenu() {
 registerPlugin( 'ai-experiments-menu', {
 	render: WrappedMenu,
 } );
+
+const penSparkIcon = () => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		height="24px"
+		viewBox="0 -960 960 960"
+		width="24px"
+		fill="#5f6368"
+	>
+		<path d="M240-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T857-647L330-120H160Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28ZM260-480q0-92-64-156T40-700q92 0 156-64t64-156q0 92 64 156t156 64q-92 0-156 64t-64 156Z" />
+	</svg>
+);
+
+const addAiControls = createHigherOrderComponent(
+	( BlockEdit ) => ( props ) => {
+		const { updateBlock } = useDispatch( blockEditorStore );
+		const { getSelectedBlock, getSelectedBlockClientId } = useSelect(
+			( select ) => {
+				return {
+					getSelectedBlock:
+						// @ts-ignore
+						select( blockEditorStore ).getSelectedBlock,
+					getSelectedBlockClientId:
+						// @ts-ignore
+						select( blockEditorStore ).getSelectedBlockClientId,
+				};
+			},
+			[]
+		);
+
+		const [ inProgress, setInProgress ] = useState( false );
+
+		if ( props.name !== 'core/paragraph' ) {
+			return <BlockEdit { ...props } />;
+		}
+
+		return (
+			<Fragment>
+				<BlockEdit { ...props } />
+				<BlockControls group="inline">
+					<ToolbarButton
+						label={ __( 'Rephrase paragraph', 'ai-experiments' ) }
+						icon={ penSparkIcon }
+						isDisabled={ inProgress }
+						onClick={ async () => {
+							setInProgress( true );
+
+							const blockId = getSelectedBlockClientId();
+
+							const postContent =
+								new window.DOMParser().parseFromString(
+									serialize( [ getSelectedBlock() ] ),
+									'text/html'
+								).body.textContent || '';
+
+							const session =
+								await window.model.createGenericSession();
+
+							const stream = session.executeStreaming(
+								`Rephrase the following paragraph: ${ postContent }`
+							);
+
+							const container: HTMLParagraphElement | null =
+								document
+									.querySelector( 'iframe' )
+									?.contentDocument?.getElementById(
+										`block-${ blockId }`
+									) as HTMLParagraphElement | null;
+
+							let result = '';
+
+							for await ( const value of stream ) {
+								// Each result contains the full data, not just the incremental part.
+								result = value;
+
+								if ( container ) {
+									container.innerHTML = result;
+								}
+							}
+
+							result = result.replaceAll( '\n\n\n\n', '\n\n' );
+
+							console.log( result );
+
+							void updateBlock( getSelectedBlockClientId(), {
+								attributes: {
+									content: result,
+								},
+							} );
+
+							setInProgress( false );
+						} }
+					/>
+				</BlockControls>
+			</Fragment>
+		);
+	},
+	'withAiControls'
+);
+
+addFilter(
+	'editor.BlockEdit',
+	'ai-experiments/add-ai-controls',
+	addAiControls
+);
