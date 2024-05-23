@@ -109,15 +109,16 @@ export function Menu() {
 	);
 
 	const termsList = (
-		taxonomies?.map(
-			( { name: taxonomy, slug }: { name: string; slug: string } ) => {
-				return `${ taxonomy }:\n\n${
-					termsPerTaxonomy[ slug ]
-						?.map( ( { name: term }: { name: string } ) => term )
-						.join( '\n' ) || ''
-				}`;
-			}
-		) || []
+		taxonomies?.map( ( { slug }: { slug: string } ) => {
+			return `Taxonomy: ${ slug }:\n\n${
+				termsPerTaxonomy[ slug ]
+					?.map(
+						( { name: term, id }: { name: string; id: number } ) =>
+							`* ${ term } (ID: ${ id })`
+					)
+					.join( '\n' ) || ''
+			}`;
+		} ) || []
 	).join( '\n\n' );
 
 	const [ inProgress, setInProgress ] = useState( false );
@@ -190,15 +191,23 @@ export function Menu() {
 							const session =
 								await window.model.createGenericSession();
 
-							const stream = session.executeStreaming(
+							const prompt =
 								`The following taxonomies and terms exist:
 
 								${ termsList }
 
-								Based on this list, suggest the recommend terms for the following content. Do not add any explanations, just list the terms for each taxonomy.
+								Based on that, determine the most suitable terms to describe the following content.
+								Provide the output as a comma-separated list of recommended numeric term IDs.
 
-								Content:  ${ postContent }`
-							);
+								Content:
+
+								${ postContent }`
+									.replaceAll( '\t', '' )
+									.replaceAll( '\n\n\n\n', '\n\n' );
+
+							console.log( prompt );
+
+							const stream = session.executeStreaming( prompt );
 
 							let result = '';
 
@@ -210,6 +219,15 @@ export function Menu() {
 							result = result.replaceAll( '\n\n\n\n', '\n\n' );
 
 							console.log( result );
+
+							const newTermIds = result
+								.split( ',' )
+								.filter( Boolean )
+								.map( ( value ) => Number( value.trim() ) )
+								.filter( ( value ) => ! Number.isNaN( value ) );
+
+							// TODO: Map term IDs back to taxonomy rest_base.
+							editPost( { tags: newTermIds } );
 
 							setInProgress( false );
 						},
