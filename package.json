@@ -40,7 +40,7 @@
 		"@wordpress/scripts": "^27.8.0",
 		"eslint": "^8.57.0",
 		"eslint-plugin-oxlint": "^0.3.0",
-		"oxlint": "^0.3.4",
+		"oxlint": "^0.4.1",
 		"prettier": "npm:wp-prettier@^3.0.3",
 		"typescript": "^5.4.5",
 		"webpack": "^5.91.0",
