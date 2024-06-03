@@ -33,7 +33,7 @@
 		"@testing-library/jest-dom": "^6.4.5",
 		"@testing-library/react": "^15.0.7",
 		"@types/jest": "^29.5.12",
-		"@types/node": "^20.12.11",
+		"@types/node": "^20.14.0",
 		"@types/wordpress__blocks": "^12.5.14",
 		"@types/wordpress__editor": "^13.6.8",
 		"@wordpress/eslint-plugin": "^19.0.0",
