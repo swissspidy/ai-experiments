@@ -1,24 +1,26 @@
 declare global {
-	interface ModelManager {
-		canCreateGenericSession(
-			opts?: SessionOptions
+	interface AI {
+		canCreateTextSession(
+			opts?: AITextSessionOptions
 		): Promise< 'no' | 'readily' >;
-
-		createGenericSession(): Promise< ModelGenericSession >;
+		createTextSession(): Promise< AITextSession >;
+		defaultTextAITextSessionOptions(): Promise<AITextSessionOptions>
 	}
 
-	interface ModelGenericSession {
+	interface AITextSession {
 		executeStreaming( prompt: string ): IterableIterator< string >;
 		execute( prompt: string ): Promise< string >;
+		promptStreaming( prompt: string ): IterableIterator< string >;
+		prompt( prompt: string ): Promise< string >;
 	}
 
-	interface SessionOptions {
+	interface AITextSessionOptions {
 		temperature: 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1.0;
 		topK: number;
 	}
 
 	interface Window {
-		model: ModelManager;
+		ai: AI;
 	}
 }
 

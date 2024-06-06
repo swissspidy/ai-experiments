@@ -140,8 +140,7 @@ export function Menu() {
 									'text/html'
 								).body.textContent || '';
 
-							const session =
-								await window.model.createGenericSession();
+							const session = await window.ai.createTextSession();
 
 							const stream = session.executeStreaming(
 								`Summarise the following text in full sentences in less than 300 characters: ${ postContent }`
@@ -188,8 +187,7 @@ export function Menu() {
 									'text/html'
 								).body.textContent || '';
 
-							const session =
-								await window.model.createGenericSession();
+							const session = await window.ai.createTextSession();
 
 							const prompt =
 								`The following taxonomies and terms exist:
@@ -205,8 +203,6 @@ export function Menu() {
 									.replaceAll( '\t', '' )
 									.replaceAll( '\n\n\n\n', '\n\n' );
 
-							console.log( prompt );
-
 							const stream = session.executeStreaming( prompt );
 
 							let result = '';
@@ -217,8 +213,6 @@ export function Menu() {
 							}
 
 							result = result.replaceAll( '\n\n\n\n', '\n\n' );
-
-							console.log( result );
 
 							const newTermIds = result
 								.split( ',' )
@@ -245,8 +239,7 @@ export function Menu() {
 									'text/html'
 								).body.textContent || '';
 
-							const session =
-								await window.model.createGenericSession();
+							const session = await window.ai.createTextSession();
 
 							const stream = session.executeStreaming(
 								`What is the overall vibe of this content? Only respond with "positive" or "negative". Do not provide any explanation for your answer. ${ postContent }`
@@ -259,7 +252,8 @@ export function Menu() {
 								result = value;
 							}
 
-							console.log( result );
+							// eslint-disable-next-line no-alert -- For testing only.
+							alert( result );
 
 							setInProgress( false );
 						},

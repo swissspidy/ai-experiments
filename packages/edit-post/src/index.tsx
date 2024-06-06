@@ -118,8 +118,7 @@ const addAiControls = createHigherOrderComponent(
 									'text/html'
 								).body.textContent || '';
 
-							const session =
-								await window.model.createGenericSession();
+							const session = await window.ai.createTextSession();
 
 							const stream = session.executeStreaming(
 								`Rephrase the following paragraph: ${ postContent }`
@@ -144,8 +143,6 @@ const addAiControls = createHigherOrderComponent(
 							}
 
 							result = result.replaceAll( '\n\n\n\n', '\n\n' );
-
-							console.log( result );
 
 							void updateBlock( getSelectedBlockClientId(), {
 								attributes: {
