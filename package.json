@@ -31,7 +31,7 @@
 	"devDependencies": {
 		"@ai-experiments/eslint-import-resolver": "*",
 		"@testing-library/jest-dom": "^6.4.5",
-		"@testing-library/react": "^15.0.7",
+		"@testing-library/react": "^16.0.0",
 		"@types/jest": "^29.5.12",
 		"@types/node": "^20.14.0",
 		"@types/wordpress__blocks": "^12.5.14",
