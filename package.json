@@ -30,7 +30,7 @@
 	},
 	"devDependencies": {
 		"@ai-experiments/eslint-import-resolver": "*",
-		"@testing-library/jest-dom": "^6.4.5",
+		"@testing-library/jest-dom": "^6.4.6",
 		"@testing-library/react": "^16.0.0",
 		"@types/jest": "^29.5.12",
 		"@types/node": "^20.14.2",
