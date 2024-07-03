@@ -1,3 +1,5 @@
 # WordPress AI Experiments
 
-See [exploration doc](https://docs.google.com/document/d/18EocG7jPDn_-MTl7SbdUqAQD9DlXGchSVJlJvTWLm7E/edit) for more information.
+Some client-side AI experiments using Chrome's [built-in AI](https://developer.chrome.com/docs/ai/built-in).
+
+Nothing to see here :-)
