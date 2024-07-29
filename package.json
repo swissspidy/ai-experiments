@@ -26,7 +26,8 @@
 		]
 	},
 	"dependencies": {
-		"@ai-experiments/edit-post": "*"
+		"@ai-experiments/edit-post": "*",
+		"eslint-plugin-react": "^7.35.0"
 	},
 	"devDependencies": {
 		"@ai-experiments/eslint-import-resolver": "*",
