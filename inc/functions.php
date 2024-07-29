@@ -22,17 +22,16 @@ function enqueue_block_editor_assets(): void {
 	$asset['version']      = $asset['version'] ?? '';
 
 	wp_enqueue_script(
-	  'ai-experiments-edit-post',
-	  plugins_url( 'build/edit-post.js', __DIR__ ),
-	  $asset['dependencies'],
-	  $asset['version'],
-	  array(
-		'strategy' => 'defer',
-	  )
+		'ai-experiments-edit-post',
+		plugins_url( 'build/edit-post.js', __DIR__ ),
+		$asset['dependencies'],
+		$asset['version'],
+		array(
+			'strategy' => 'defer',
+		)
 	);
 
 	wp_set_script_translations( 'ai-experiments', 'ai-experiments' );
 }
 
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\enqueue_block_editor_assets' );
-
