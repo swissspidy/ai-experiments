@@ -78,7 +78,11 @@ const penSparkIcon = () => (
 
 const addAiControls = createHigherOrderComponent(
 	( BlockEdit ) => ( props ) => {
-		const { updateBlock } = useDispatch( blockEditorStore );
+		const {
+			updateBlock,
+			__unstableMarkNextChangeAsNotPersistent,
+			__unstableMarkLastChangeAsPersistent,
+		} = useDispatch( blockEditorStore );
 		const { getSelectedBlock, getSelectedBlockClientId } = useSelect(
 			( select ) => {
 				return {
@@ -110,45 +114,43 @@ const addAiControls = createHigherOrderComponent(
 						onClick={ async () => {
 							setInProgress( true );
 
-							const blockId = getSelectedBlockClientId();
-
 							const postContent =
 								new window.DOMParser().parseFromString(
 									serialize( [ getSelectedBlock() ] ),
 									'text/html'
 								).body.textContent || '';
 
-							const session = await window.ai.createTextSession();
+							const session = await window.ai.createTextSession( {
+								systemPrompt:
+									'You are a writing assistant tasked with providing feedback on content and rephrasing texts to make them more readable and contain less errors.',
+							} );
 
-							const stream = session.executeStreaming(
+							const stream = session.promptStreaming(
 								`Rephrase the following paragraph: ${ postContent }`
 							);
 
-							const container: HTMLParagraphElement | null =
-								document
-									.querySelector( 'iframe' )
-									?.contentDocument?.getElementById(
-										`block-${ blockId }`
-									) as HTMLParagraphElement | null;
-
 							let result = '';
+
+							void __unstableMarkLastChangeAsPersistent();
 
 							for await ( const value of stream ) {
 								// Each result contains the full data, not just the incremental part.
-								result = value;
+								result = value.replaceAll( '\n\n\n\n', '\n\n' );
 
-								if ( container ) {
-									container.innerHTML = result;
-								}
+								void __unstableMarkNextChangeAsNotPersistent();
+								void updateBlock( getSelectedBlockClientId(), {
+									attributes: {
+										content: result,
+									},
+								} );
 							}
-
-							result = result.replaceAll( '\n\n\n\n', '\n\n' );
 
 							void updateBlock( getSelectedBlockClientId(), {
 								attributes: {
 									content: result,
 								},
 							} );
+							void __unstableMarkLastChangeAsPersistent();
 
 							setInProgress( false );
 						} }

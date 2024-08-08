@@ -99,6 +99,7 @@ export function Menu() {
 					visibleTaxonomies.map( ( { slug }: { slug: string } ) => {
 						return [
 							slug,
+							// @ts-ignore
 							getEntityRecords( 'taxonomy', slug, DEFAULT_QUERY ),
 						];
 					} )
@@ -142,14 +143,9 @@ export function Menu() {
 
 							const session = await window.ai.createTextSession();
 
-							const stream = session.executeStreaming(
+							const stream = session.promptStreaming(
 								`Summarise the following text in full sentences in less than 300 characters: ${ postContent }`
 							);
-
-							const textArea: HTMLTextAreaElement | null =
-								document.querySelector(
-									'.editor-post-excerpt textarea'
-								);
 
 							let result = '';
 
@@ -157,9 +153,10 @@ export function Menu() {
 								// Each result contains the full data, not just the incremental part.
 								result = value;
 
-								if ( textArea ) {
-									textArea.value = value;
-								}
+								editPost(
+									{ excerpt: result },
+									{ isCached: true }
+								);
 							}
 
 							result = result.replaceAll( '\n\n\n\n', '\n\n' );
@@ -203,7 +200,7 @@ export function Menu() {
 									.replaceAll( '\t', '' )
 									.replaceAll( '\n\n\n\n', '\n\n' );
 
-							const stream = session.executeStreaming( prompt );
+							const stream = session.promptStreaming( prompt );
 
 							let result = '';
 
@@ -241,7 +238,7 @@ export function Menu() {
 
 							const session = await window.ai.createTextSession();
 
-							const stream = session.executeStreaming(
+							const stream = session.promptStreaming(
 								`What is the overall vibe of this content? Only respond with "positive" or "negative". Do not provide any explanation for your answer. ${ postContent }`
 							);
 

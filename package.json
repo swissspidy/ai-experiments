@@ -41,18 +41,23 @@
 		"eslint": "^8.57.0",
 		"eslint-plugin-oxlint": "^0.5.0",
 		"oxlint": "^0.7.0",
+		"patch-package": "^8.0.0",
 		"prettier": "npm:wp-prettier@^3.0.3",
 		"typescript": "^5.5.4",
 		"webpack": "^5.93.0",
 		"webpack-cli": "^5.1.4"
 	},
+	"overrides": {
+		"@wordpress/components": "^28.5.0"
+	},
 	"scripts": {
+		"postinstall": "patch-package",
 		"build": "wp-scripts build",
 		"build:package-types": "tsc --build",
 		"format": "wp-scripts format",
 		"lint:css": "wp-scripts lint-style",
-	  "lint:js": "oxlint --quiet -c=.oxlintrc.json --tsconfig=tsconfig.json --ignore-pattern=@types --jest-plugin --promise-plugin --react-perf-plugin --import-plugin --jsdoc-plugin && wp-scripts lint-js",
-	  "lint:js:fix": "oxlint --quiet -c=.oxlintrc.json --tsconfig=tsconfig.json --ignore-pattern=@types --jest-plugin --promise-plugin --react-perf-plugin --import-plugin --jsdoc-plugin --fix && wp-scripts lint-js --fix",
+		"lint:js": "oxlint --quiet -c=.oxlintrc.json --tsconfig=tsconfig.json --ignore-pattern=@types --jest-plugin --promise-plugin --react-perf-plugin --import-plugin --jsdoc-plugin && wp-scripts lint-js",
+		"lint:js:fix": "oxlint --quiet -c=.oxlintrc.json --tsconfig=tsconfig.json --ignore-pattern=@types --jest-plugin --promise-plugin --react-perf-plugin --import-plugin --jsdoc-plugin --fix && wp-scripts lint-js --fix",
 		"lint:md:docs": "wp-scripts lint-md-docs",
 		"lint:md:js": "wp-scripts lint-md-js",
 		"lint:pkg-json": "wp-scripts lint-pkg-json",
