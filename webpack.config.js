@@ -4,7 +4,7 @@ const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 module.exports = {
 	...defaultConfig,
 	entry: {
-		'edit-post': resolve( __dirname, 'packages/edit-post/src/index.tsx' ),
+		'edit-post': resolve( __dirname, 'packages/editor/src/index.tsx' ),
 	},
 	output: {
 		filename: '[name].js',

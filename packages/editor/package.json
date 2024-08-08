@@ -4,7 +4,7 @@
 	"description": "Main WordPress post editor integration",
 	"private": true,
 	"author": "",
-	"license": "GPL-2.0-or-later",
+	"license": "Apache-2.0",
 	"keywords": [
 		"wordpress",
 		"gutenberg",
