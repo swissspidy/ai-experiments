@@ -12,6 +12,9 @@ namespace AiExperiments;
 use WP_Block;
 use WP_Block_Supports;
 
+/**
+ * Registers the summarize button block.
+ */
 function register_summarize_button_block() {
 	register_block_type(
 		dirname( __DIR__ ) . '/build/summarize-button',
@@ -37,10 +40,10 @@ function render_summarize_block( $attributes, string $content, WP_Block $block )
 
 	// TODO: Figure out why the stylesheet is not enqueued the regular way.
 	wp_add_inline_style(
-			'wp-block-library',
-			file_get_contents(
-					plugin_dir_path( __DIR__ ) . 'build/style-summarize-button.css'
-			)
+		'wp-block-library',
+		file_get_contents(
+			plugin_dir_path( __DIR__ ) . 'build/style-summarize-button.css'
+		)
 	);
 
 	ob_start();
@@ -76,6 +79,9 @@ function render_summarize_block( $attributes, string $content, WP_Block $block )
 	return (string) ob_get_clean();
 }
 
+/**
+ * Renders the post summary overlay.
+ */
 function render_summary_overlay() {
 	?>
 		<dialog
@@ -84,13 +90,13 @@ function render_summary_overlay() {
 			data-wp-on--keydown="actions.handleKeydown"
 			>
 			<form method="dialog">
-				<button type="button" aria-label="<?php esc_attr_e( 'Close', 'ai-experiments'); ?>" class="close-button" data-wp-on-async--click="actions.hideLightbox">
+				<button type="button" aria-label="<?php esc_attr_e( 'Close', 'ai-experiments' ); ?>" class="close-button" data-wp-on-async--click="actions.hideLightbox">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M13 11.8l6.1-6.3-1-1-6.1 6.2-6.1-6.2-1 1 6.1 6.3-6.5 6.7 1 1 6.5-6.6 6.5 6.6 1-1z"></path></svg>
 				</button>
 			</form>
 			<div data-wp-text="state.summary" data-wp-class--visible="state.isReady" class="summary"></div>
 			<div data-wp-class--visible="state.isLoading" class="loading">
-				<?php esc_html_e( 'Generating summary...', 'ai-experiments'); ?>
+				<?php esc_html_e( 'Generating summary...', 'ai-experiments' ); ?>
 			</div>
 		</dialog>
 	<?php
@@ -100,11 +106,11 @@ add_action( 'wp_footer', __NAMESPACE__ . '\render_summary_overlay' );
 
 /**
  * Filters the summarize button block to inherit the a
- * @param array $hooked_block
- * @param string $hooked_block_type
- * @param string $relative_position
- * @param array $anchor_block
  *
+ * @param array|null $hooked_block The parsed block array for the given hooked block type, or null to suppress the block.
+ * @param string     $hooked_block_type   The hooked block type name.
+ * @param string     $relative_position   The relative position of the hooked block.
+ * @param array      $anchor_block The anchor block, in parsed block array format.
  * @return array Filtered block data.
  */
 function set_block_layout_attribute_based_on_adjacent_block( $hooked_block, $hooked_block_type, $relative_position, $anchor_block ) {
@@ -126,8 +132,6 @@ add_filter( 'hooked_block_ai-experiments/summarize-button', __NAMESPACE__ . '\se
 
 /**
  * Enqueues scripts for the block editor.
- *
- * @return void
  */
 function enqueue_block_editor_assets(): void {
 	$asset_file = dirname( __DIR__ ) . '/build/editor.asset.php';
@@ -168,6 +172,9 @@ function enqueue_block_editor_assets(): void {
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\enqueue_block_editor_assets' );
 
 
+/**
+ * Registers assets for the frontend.
+ */
 function register_frontend_assets() {
 	$asset_file = dirname( __DIR__ ) . '/build/summarize-button-view.asset.php';
 	$asset      = is_readable( $asset_file ) ? require $asset_file : [];
@@ -176,10 +183,10 @@ function register_frontend_assets() {
 	$asset['version']      = $asset['version'] ?? '';
 
 	wp_register_script_module(
-			'@ai-experiments/summarize-button',
-			plugins_url( 'build/summarize-button-view.js', __DIR__ ),
-			array( '@wordpress/interactivity' ),
-			$asset['version'],
+		'@ai-experiments/summarize-button',
+		plugins_url( 'build/summarize-button-view.js', __DIR__ ),
+		array( '@wordpress/interactivity' ),
+		$asset['version'],
 	);
 
 	$asset_file = dirname( __DIR__ ) . '/build/summarize-button.asset.php';
@@ -189,10 +196,10 @@ function register_frontend_assets() {
 	$asset['version']      = $asset['version'] ?? '';
 
 	wp_register_style(
-			'ai-experiments-summarize-button',
-			plugins_url( 'build/style-summarize-button.css', __DIR__ ),
-			$asset['dependencies'],
-			$asset['version'],
+		'ai-experiments-summarize-button',
+		plugins_url( 'build/style-summarize-button.css', __DIR__ ),
+		$asset['dependencies'],
+		$asset['version'],
 	);
 }
 
