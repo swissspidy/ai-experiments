@@ -38,7 +38,7 @@
 		"@types/wordpress__editor": "^13.6.8",
 		"@wordpress/eslint-plugin": "^20.2.0",
 		"@wordpress/scripts": "^28.5.0",
-		"eslint": "^8.57.0",
+		"eslint": "^9.9.0",
 		"eslint-plugin-oxlint": "^0.7.0",
 		"oxlint": "^0.7.0",
 		"patch-package": "^8.0.0",
