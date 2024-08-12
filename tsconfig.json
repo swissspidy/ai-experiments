@@ -2,6 +2,9 @@
 	"references": [
 		{
 			"path": "packages/editor"
+		},
+		{
+			"path": "packages/summarize-button"
 		}
 	],
 	"files": []

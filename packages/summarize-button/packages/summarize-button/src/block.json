@@ -1,0 +1,17 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ai-experiments/summarize-button",
+	"version": "0.0.1",
+	"title": "summarize button",
+	"category": "widgets",
+	"description": "Block that allows summarizing the post content",
+	"supports": {
+		"html": false,
+		"layout": true
+	},
+	"textdomain": "summarize-button",
+	"blockHooks": {
+		"core/post-content": "before"
+	}
+}

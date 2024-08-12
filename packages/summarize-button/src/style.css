@@ -1,0 +1,48 @@
+.ai-summary-button svg {
+	fill: currentColor;
+}
+
+.body:has(.ai-summary-lightbox-overlay[open]) {
+	overflow: hidden;
+}
+
+.ai-summary-lightbox-overlay {
+	position: fixed;
+	inset-block-start: 0;
+	inset-block-end: 0;
+	max-width: max(50vw, 400px);
+	max-height: max(50vh, 400px);
+	user-select: text;
+	visibility: visible;
+	overflow: auto;
+}
+
+.ai-summary-lightbox-overlay::backdrop {
+	background: #444;
+	opacity: 0.75;
+}
+
+.ai-summary-lightbox-overlay .summary {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	margin-top: 40px;
+}
+
+.ai-summary-lightbox-overlay .loading {
+	display: none;
+}
+
+.ai-summary-lightbox-overlay .loading.visible {
+	display: block;
+}
+
+.ai-summary-lightbox-overlay .close-button {
+	position: absolute;
+	top: 20px;
+	cursor: pointer;
+	z-index: 5000000;
+	min-width: 40px;
+	align-items: center;
+	justify-content: center;
+}
