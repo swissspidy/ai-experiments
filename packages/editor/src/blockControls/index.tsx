@@ -1,8 +1,8 @@
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { addFilter } from '@wordpress/hooks';
 
-import { ParagraphControls } from './blockControls/paragraphControls';
-import { ImageControls } from './blockControls/imageControls';
+import { ParagraphControls } from './paragraphControls';
+import { ImageControls } from './imageControls';
 
 const addAiControls = createHigherOrderComponent(
 	( BlockEdit ) => ( props ) => {

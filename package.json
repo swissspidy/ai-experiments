@@ -31,6 +31,7 @@
 		"eslint-plugin-react": "^7.35.0"
 	},
 	"devDependencies": {
+		"@shopify/web-worker": "^6.3.0",
 		"@testing-library/jest-dom": "^6.4.8",
 		"@testing-library/react": "^16.0.0",
 		"@types/jest": "^29.5.12",
@@ -42,13 +43,14 @@
 		"@wordpress/scripts": "^28.5.0",
 		"copy-webpack-plugin": "^12.0.2",
 		"eslint": "^8.57.0",
-		"eslint-plugin-oxlint": "^0.7.0",
-		"oxlint": "^0.7.0",
+		"eslint-plugin-oxlint": "^0.7.1",
+		"oxlint": "^0.7.1",
 		"patch-package": "^8.0.0",
 		"prettier": "npm:wp-prettier@^3.0.3",
 		"typescript": "^5.5.4",
 		"webpack": "^5.93.0",
-		"webpack-cli": "^5.1.4"
+		"webpack-cli": "^5.1.4",
+		"webpack-virtual-modules": "^0.6.2"
 	},
 	"overrides": {
 		"@wordpress/components": "^28.5.0"
