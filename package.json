@@ -35,7 +35,7 @@
 		"@testing-library/jest-dom": "^6.4.8",
 		"@testing-library/react": "^16.0.0",
 		"@types/jest": "^29.5.12",
-		"@types/node": "^22.2.0",
+		"@types/node": "^22.4.0",
 		"@types/wordpress__blocks": "^12.5.14",
 		"@types/wordpress__editor": "^13.6.8",
 		"@wordpress/dependency-extraction-webpack-plugin": "^6.5.0",
