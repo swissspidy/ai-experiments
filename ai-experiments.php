@@ -3,7 +3,7 @@
  * Plugin Name:       AI Experiments
  * Plugin URI:        https://github.com/swissspidy/ai-experiments
  * Description:       AI Experiments
- * Version:           0.0.1
+ * Version:           0.1.0
  * Author:            Pascal Birchler
  * Author URI:        https://pascalbirchler.com
  * License:           Apache-2.0
