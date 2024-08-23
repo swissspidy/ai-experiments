@@ -42,7 +42,7 @@ export function ParagraphControls( { setAttributes, clientId } ) {
 
 		const postContent = serialize( [ getBlock( clientId ) ] );
 
-		const session = await window.ai.createTextSession( {
+		const session = await window.ai.assistant.create( {
 			systemPrompt:
 				'You are a writing assistant tasked with providing feedback on content and rephrasing texts to make them more readable and contain less errors. Retain HTML markup and hyperlinks in the content.',
 		} );
