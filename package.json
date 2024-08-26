@@ -42,7 +42,7 @@
 		"@wordpress/eslint-plugin": "^20.3.0",
 		"@wordpress/scripts": "^28.6.0",
 		"copy-webpack-plugin": "^12.0.2",
-		"eslint": "^8.57.0",
+		"eslint": "^9.9.1",
 		"eslint-plugin-oxlint": "^0.7.2",
 		"oxlint": "^0.8.0",
 		"patch-package": "^8.0.0",
