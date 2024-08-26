@@ -27,7 +27,7 @@
 	},
 	"dependencies": {
 		"@ai-experiments/edit-post": "*",
-		"@wordpress/interactivity": "^6.5.0",
+		"@wordpress/interactivity": "^6.6.0",
 		"eslint-plugin-react": "^7.35.0"
 	},
 	"devDependencies": {
@@ -38,9 +38,9 @@
 		"@types/node": "^22.4.0",
 		"@types/wordpress__blocks": "^12.5.14",
 		"@types/wordpress__editor": "^13.6.8",
-		"@wordpress/dependency-extraction-webpack-plugin": "^6.5.0",
-		"@wordpress/eslint-plugin": "^20.2.0",
-		"@wordpress/scripts": "^28.5.0",
+		"@wordpress/dependency-extraction-webpack-plugin": "^6.6.0",
+		"@wordpress/eslint-plugin": "^20.3.0",
+		"@wordpress/scripts": "^28.6.0",
 		"copy-webpack-plugin": "^12.0.2",
 		"eslint": "^8.57.0",
 		"eslint-plugin-oxlint": "^0.7.2",
