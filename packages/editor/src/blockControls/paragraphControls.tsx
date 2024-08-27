@@ -2,7 +2,7 @@ import {
 	BlockControls,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
-import { pasteHandler, serialize } from '@wordpress/blocks';
+import { serialize } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import { ToolbarDropdownMenu } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
@@ -23,7 +23,6 @@ const penSparkIcon = () => (
 // @ts-ignore
 export function ParagraphControls( { setAttributes, clientId } ) {
 	const {
-		replaceBlock,
 		__unstableMarkNextChangeAsNotPersistent,
 		__unstableMarkLastChangeAsPersistent,
 	} = useDispatch( blockEditorStore );
@@ -42,41 +41,75 @@ export function ParagraphControls( { setAttributes, clientId } ) {
 
 		const postContent = serialize( [ getBlock( clientId ) ] );
 
-		const session = await window.ai.assistant.create( {
-			systemPrompt:
-				'You are a writing assistant tasked with providing feedback on content and rephrasing texts to make them more readable and contain less errors. Retain HTML markup and hyperlinks in the content.',
-		} );
-
-		let prompt: string = '';
+		let tone: AIRewriterTone = 'as-is';
+		let length: AIRewriterLength = 'as-is';
 
 		switch ( type ) {
 			case 'rephrase':
 			default:
-				prompt = `Rephrase the following paragraph using full sentences and valid HTML markup:\n\n ${ postContent }`;
 				break;
 
-			case 'bulletize':
-				prompt = `Summarize the following text using bullet points in valid Markdown format and valid HTML, fully retaining any hyperlinks:\n\n ${ postContent }`;
+			case 'longer':
+				length = 'longer';
 				break;
 
-			case 'summarize':
-				prompt = `Summarise the following text in full sentences:\n\n ${ postContent }`;
+			case 'shorter':
+				length = 'shorter';
 				break;
 
-			case 'elaborate':
-				prompt = `Expand and elaborate on the following text:\n\n ${ postContent }`;
+			case 'formal':
+				tone = 'more-formal';
 				break;
 
-			case 'shorten':
-				prompt = `Make the following text shorter:\n\n ${ postContent }`;
+			case 'informal':
+				tone = 'more-casual';
 				break;
 		}
 
-		const stream = session.promptStreaming( prompt );
+		const rewriter = await window.ai.rewriter.create( {
+			sharedContext: 'A blog post',
+			tone,
+			length,
+		} );
+
+		const stream = await rewriter.rewriteStreaming( postContent, {
+			context:
+				'Avoid any toxic language and be as constructive as possible.',
+		} );
 
 		let result = '';
 
-		let newClientId = clientId;
+		for await ( const value of stream ) {
+			// Each result contains the full data, not just the incremental part.
+			result = value;
+
+			void __unstableMarkNextChangeAsNotPersistent();
+
+			void setAttributes( {
+				content: result,
+			} );
+		}
+
+		void __unstableMarkLastChangeAsPersistent();
+
+		setInProgress( false );
+	}
+
+	async function summarize() {
+		setInProgress( true );
+
+		const postContent = serialize( [ getBlock( clientId ) ] );
+
+		const summarizer = await window.ai.summarizer.create( {
+			sharedContext: 'A blog post',
+		} );
+
+		const stream = await summarizer.summarizeStreaming( postContent, {
+			context:
+				'Avoid any toxic language and be as constructive as possible.',
+		} );
+
+		let result = '';
 
 		for await ( const value of stream ) {
 			// Each result contains the full data, not just the incremental part.
@@ -84,20 +117,9 @@ export function ParagraphControls( { setAttributes, clientId } ) {
 
 			void __unstableMarkNextChangeAsNotPersistent();
 
-			if ( 'bulletize' === type ) {
-				const parsedBlocks = pasteHandler( {
-					plainText: result,
-					mode: 'BLOCKS',
-				} );
-				if ( parsedBlocks.length > 0 ) {
-					replaceBlock( newClientId, parsedBlocks );
-					newClientId = parsedBlocks[ 0 ].clientId;
-				}
-			} else {
-				void setAttributes( {
-					content: result,
-				} );
-			}
+			void setAttributes( {
+				content: result,
+			} );
 		}
 
 		void __unstableMarkLastChangeAsPersistent();
@@ -108,31 +130,37 @@ export function ParagraphControls( { setAttributes, clientId } ) {
 	const controls = [
 		{
 			title: __( 'Summarize', 'ai-experiments' ),
-			onClick: () => rewrite( 'summarize' ),
-			role: 'menuitemradio',
-			icon: undefined,
-		},
-		{
-			title: __( 'Bulletize', 'ai-experiments' ),
-			onClick: () => rewrite( 'bulletize' ),
-			role: 'menuitemradio',
-			icon: undefined,
-		},
-		{
-			title: __( 'Elaborate', 'ai-experiments' ),
-			onClick: () => rewrite( 'elaborate' ),
-			role: 'menuitemradio',
-			icon: undefined,
-		},
-		{
-			title: __( 'Shorten', 'ai-experiments' ),
-			onClick: () => rewrite( 'shorten' ),
+			onClick: () => summarize(),
 			role: 'menuitemradio',
 			icon: undefined,
 		},
 		{
 			title: __( 'Rephrase', 'ai-experiments' ),
 			onClick: () => rewrite( 'rephrase' ),
+			role: 'menuitemradio',
+			icon: undefined,
+		},
+		{
+			title: __( 'Elaborate', 'ai-experiments' ),
+			onClick: () => rewrite( 'longer' ),
+			role: 'menuitemradio',
+			icon: undefined,
+		},
+		{
+			title: __( 'Shorten', 'ai-experiments' ),
+			onClick: () => rewrite( 'shorter' ),
+			role: 'menuitemradio',
+			icon: undefined,
+		},
+		{
+			title: __( 'Formal', 'ai-experiments' ),
+			onClick: () => rewrite( 'formal' ),
+			role: 'menuitemradio',
+			icon: undefined,
+		},
+		{
+			title: __( 'Informal', 'ai-experiments' ),
+			onClick: () => rewrite( 'informal' ),
 			role: 'menuitemradio',
 			icon: undefined,
 		},

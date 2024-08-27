@@ -1,21 +1,21 @@
+/**
+ * See https://github.com/explainers-by-googlers/writing-assistance-apis
+ * and https://github.com/explainers-by-googlers/prompt-api
+ */
 declare global {
 	interface AI {
 		assistant: AIAssistantFactory;
 		summarizer: AISummarizerFactory;
+		writer: AIWriterFactory;
+		rewriter: AIRewriterFactory;
+
 	}
 
 	interface AIAssistantFactory {
 		create(
-			opts?: AIAssistantCreateOptions
+			options?: AIAssistantCreateOptions
 		): Promise< AIAssistant >;
 		capabilities(): Promise< AIAssistantCapabilities >
-	}
-
-	type AICapabilityAvailability = 'readily' | 'after-download' | 'no';
-
-	interface AISummarizerFactory {
-		create(): Promise< AISummarizer >;
-		capabilities(): Promise< AISummarizerCapabilities >;
 	}
 
 	interface AIAssistantCapabilities {
@@ -26,22 +26,137 @@ declare global {
 		supportsLanguage(languageTag: string): AICapabilityAvailability
 	}
 
-	interface AISummarizerCapabilities {
-		available: AICapabilityAvailability;
-	}
-
-	interface AISummarizer extends EventTarget {
-		ready: Promise< undefined >;
-		summarize( input: string ): Promise< string >;
-	}
-
 	interface AIAssistant {
-		promptStreaming( input: string, options?: AIAssistantPromptOptions ): IterableIterator< string >;
 		prompt( input: string, options?: AIAssistantPromptOptions ): Promise< string >;
+		promptStreaming( input: string, options?: AIAssistantPromptOptions ): ReadableStream< string >;
 		countPromptTokens( input: string, options?: AIAssistantPromptOptions ): number;
 		destroy(): void;
 		clone(): AIAssistant;
 	}
+
+	interface AISummarizerFactory {
+		create(options?: AISummarizerCreateOptions): Promise< AISummarizer >;
+		capabilities(): Promise< AISummarizerCapabilities >;
+	}
+
+	interface AISummarizerCapabilities {
+		available: AICapabilityAvailability;
+		supportsType(tone: AISummarizerType): AICapabilityAvailability ;
+		supportsFormat(format: AISummarizerFormat): AICapabilityAvailability ;
+		supportsLength(length: AISummarizerLength): AICapabilityAvailability ;
+		supportsInputLanguage(languageTag: string): AICapabilityAvailability ;
+	}
+
+	interface AISummarizerCreateOptions {
+		signal?: AbortSignal;
+		monitor?: AICreateMonitorCallback;
+		sharedContext?: string;
+		type?: AISummarizerType; // Default is 'key-points'.
+		format?: AISummarizerFormat; // Default is 'markdown'.
+		length?: AISummarizerLength; // Default is 'short'.
+	}
+
+	type AISummarizerType =  "tl;dr" | "key-points"| "teaser" | "headline";
+	type AISummarizerFormat = 'plain-text' | 'markdown';
+	type AISummarizerLength = 'short' | 'medium' | 'long';
+
+	interface AISummarizerSummarizeOptions {
+		signal?: AbortSignal;
+		context?: string;
+	}
+
+	interface AISummarizer extends EventTarget {
+		ready: Promise< undefined >;
+		summarize( input: string, options?: AISummarizerSummarizeOptions ): Promise< string >;
+		summarizeStreaming( input: string, options?: AISummarizerSummarizeOptions ): ReadableStream< string >;
+	}
+
+	interface AIWriterFactory {
+		create(
+			options?: AIWriterCreateOptions
+		): Promise< AIWriter >;
+		capabilities(): Promise< AIWriterCapabilities >
+	}
+
+	interface AIWriterCapabilities {
+		available: AICapabilityAvailability;
+		supportsTone(tone: AIWriterTone): AICapabilityAvailability ;
+		supportsFormat(format: AIWriterFormat): AICapabilityAvailability ;
+		supportsLength(length: AIWriterLength): AICapabilityAvailability ;
+		supportsInputLanguage(languageTag: string): AICapabilityAvailability ;
+	}
+
+	interface AIWriterCreateOptions {
+		signal?: AbortSignal;
+		monitor?: AICreateMonitorCallback;
+		sharedContext?: string;
+		tone?: AIWriterTone; // Default is 'key-points'.
+		format?: AIWriterFormat; // Default is 'markdown'.
+		length?: AIWriterLength; // Default is 'short'.
+	}
+
+	// TODO: What about 'key-points'? File issue.
+	type AIWriterTone = 'formal' | 'neutral' | 'casual';
+	type AIWriterFormat = 'plain-text' | 'markdown';
+	type AIWriterLength = 'short' | 'medium' | 'long';
+
+	interface AIWriterWriteOptions {
+		signal?: AbortSignal;
+		context?: string;
+	}
+
+	interface AIWriter {
+		write( writingTask: string, options?: AIWriterWriteOptions ): Promise< string >;
+		writeStreaming( writingTask: string, options?: AIWriterWriteOptions ): ReadableStream< string >;
+		tone: AIWriterTone;
+		format: AIWriterFormat;
+		length: AIWriterLength;
+		destroy(): void;
+	}
+
+	interface AIRewriterFactory {
+		create(
+			options?: AIRewriterCreateOptions
+		): Promise< AIRewriter >;
+		capabilities(): Promise< AIRewriterCapabilities >
+	}
+
+	interface AIRewriterCapabilities {
+		available: AICapabilityAvailability;
+		supportsTone(tone: AIRewriterTone): AICapabilityAvailability ;
+		supportsFormat(format: AIRewriterFormat): AICapabilityAvailability ;
+		supportsLength(length: AIRewriterLength): AICapabilityAvailability ;
+		supportsInputLanguage(languageTag: string): AICapabilityAvailability ;
+	}
+
+	interface AIRewriterCreateOptions {
+		signal?: AbortSignal;
+		monitor?: AICreateMonitorCallback;
+		sharedContext?: string;
+		tone?: AIRewriterTone; // Default is 'as-is'.
+		format?: AIRewriterFormat; // Default is 'as-is'.
+		length?: AIRewriterLength; // Default is 'as-is'.
+	}
+
+	type AIRewriterTone = 'as-is' | 'more-formal' | 'more-casual';
+	type AIRewriterFormat = 'as-is' | 'plain-text' | 'markdown';
+	type AIRewriterLength = 'as-is' | 'shorter' | 'longer';
+
+	interface AIRewriterRewriteOptions {
+		signal?: AbortSignal;
+		context?: string;
+	}
+
+	interface AIRewriter {
+		rewrite( writingTask: string, options?: AIRewriterRewriteOptions ): Promise< string >;
+		rewriteStreaming( writingTask: string, options?: AIRewriterRewriteOptions ): ReadableStream< string >;
+		tone: AIRewriterTone;
+		format: AIRewriterFormat;
+		length: AIRewriterLength;
+		destroy(): void;
+	}
+
+	type AICapabilityAvailability = 'readily' | 'after-download' | 'no';
 
 	interface InitialPrompt {
 		role: string;
