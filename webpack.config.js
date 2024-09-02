@@ -23,6 +23,10 @@ const regular = {
 		globalObject: 'self', // This is the default, but required for @shopify/web-worker.
 	},
 	resolve: {
+		// Ensure "require" has a higher priority when matching export conditions.
+		// https://webpack.js.org/configuration/resolve/#resolveconditionnames
+		// Needed for @huggingface/transformers.
+		conditionNames: [ 'node', 'require', 'import' ],
 		extensions: [ '.jsx', '.ts', '.tsx', '...' ],
 	},
 	module: {

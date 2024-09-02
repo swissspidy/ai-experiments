@@ -26,9 +26,6 @@
 		]
 	},
 	"dependencies": {
-		"@ai-experiments/edit-post": "*",
-		"@wordpress/interactivity": "^6.6.0",
-		"eslint-plugin-react": "^7.35.0"
 	},
 	"devDependencies": {
 		"@shopify/web-worker": "^6.3.0",
@@ -44,6 +41,7 @@
 		"copy-webpack-plugin": "^12.0.2",
 		"eslint": "^8.57.0",
 		"eslint-plugin-oxlint": "^0.9.1",
+	  	"eslint-plugin-react": "^7.35.0",
 		"oxlint": "^0.9.1",
 		"patch-package": "^8.0.0",
 		"prettier": "npm:wp-prettier@^3.0.3",
