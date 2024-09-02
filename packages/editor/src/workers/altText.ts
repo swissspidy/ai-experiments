@@ -17,7 +17,9 @@ let tokenizer: PreTrainedTokenizer;
 async function loadModels() {
 	env.allowLocalModels = false;
 	env.allowRemoteModels = true;
-	env.backends.onnx.wasm.proxy = false;
+	if ( env.backends.onnx.wasm ) {
+		env.backends.onnx.wasm.proxy = false;
+	}
 
 	const modelId = 'onnx-community/Florence-2-base-ft';
 	model = await Florence2ForConditionalGeneration.from_pretrained( modelId, {
