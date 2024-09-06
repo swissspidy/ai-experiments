@@ -1,3 +1,6 @@
+/**
+ * WordPress dependencies
+ */
 // @ts-ignore
 import { useCommandLoader } from '@wordpress/commands';
 import { store as coreStore } from '@wordpress/core-data';
@@ -182,24 +185,24 @@ Given the provided content, determine the most suitable terms to describe the co
 Do not summarize the content. Do not hallucinate.
 Provide the output as a comma-separated list of recommended term IDs.
 `,
-						} as SystemPrompt,
+						},
 						{
 							role: 'user',
 							content:
 								'This is a presentation about my favorite content management system, WordPress. Go check it out.',
-						} as UserPrompt,
+						},
 						{
 							role: 'assistant',
 							content: '10,6',
-						} as AssistantPrompt,
+						},
 						{
 							role: 'user',
 							content: `I love pizza and Drupal!`,
-						} as UserPrompt,
+						},
 						{
 							role: 'assistant',
 							content: '1,3,4',
-						} as AssistantPrompt,
+						},
 					],
 				} );
 
