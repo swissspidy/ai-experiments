@@ -31,7 +31,7 @@
 		"@testing-library/react": "^16.0.1",
 		"@types/dom-chromium-ai": "^0.0.0",
 		"@types/jest": "^29.5.12",
-		"@types/node": "^22.5.2",
+		"@types/node": "^22.5.4",
 		"@types/wordpress__blocks": "^12.5.14",
 		"@types/wordpress__editor": "^13.6.8",
 		"@wordpress/dependency-extraction-webpack-plugin": "^6.6.0",
