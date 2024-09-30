@@ -33,6 +33,7 @@ Using a simple prompt to summarize the content in only a few sentences.
 https://github.com/user-attachments/assets/4aea598f-f38d-4cee-9ce0-ce09563ee537
 
 ### “Help me write”
+
 Options for rewriting individual paragraphs à la Google Doc, like rephrasing, shortening or elaborating.
 
 !["Help me write" integration](https://github.com/user-attachments/assets/ec0c944c-7537-480b-b026-10daa7791c0b)
