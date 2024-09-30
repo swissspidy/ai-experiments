@@ -29,7 +29,7 @@
 		"@shopify/web-worker": "^6.3.1",
 		"@testing-library/jest-dom": "^6.5.0",
 		"@testing-library/react": "^16.0.1",
-		"@types/dom-chromium-ai": "^0.0.0",
+		"@types/dom-chromium-ai": "^0.0.1",
 		"@types/jest": "^29.5.13",
 		"@types/node": "^22.5.5",
 		"@types/wordpress__blocks": "^12.5.14",
