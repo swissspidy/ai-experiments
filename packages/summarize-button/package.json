@@ -27,9 +27,9 @@
 		}
 	},
 	"dependencies": {
-		"@wordpress/block-editor": "^14.2.0",
+		"@wordpress/block-editor": "^14.4.0",
 		"@wordpress/blocks": "^13.5.0",
 		"@wordpress/i18n": "^5.0.0",
-		"@wordpress/interactivity": "^6.7.0"
+		"@wordpress/interactivity": "^6.9.0"
 	}
 }
