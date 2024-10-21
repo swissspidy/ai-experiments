@@ -143,7 +143,7 @@ function useAICommandLoader() {
 			callback: async ( { close } ) => {
 				close();
 
-				const session = await window.ai.assistant.create();
+				const session = await window.ai.languageModel.create();
 
 				const stream = session.promptStreaming(
 					`Summarise the following text in full sentences in less than 300 characters: ${ postContent }`
@@ -171,7 +171,7 @@ function useAICommandLoader() {
 			callback: async ( { close } ) => {
 				close();
 
-				const session = await window.ai.assistant.create( {
+				const session = await window.ai.languageModel.create( {
 					initialPrompts: [
 						{
 							role: 'system',
@@ -252,7 +252,7 @@ ${ postContent }`
 			callback: async ( { close } ) => {
 				close();
 
-				const session = await window.ai.assistant.create();
+				const session = await window.ai.languageModel.create();
 
 				const stream = session.promptStreaming(
 					`What is the overall vibe of this content? Only respond with "positive" or "negative". Do not provide any explanation for your answer. ${ postContent }`
@@ -279,7 +279,7 @@ ${ postContent }`
 			callback: async ( { close } ) => {
 				close();
 
-				const session = await window.ai.assistant.create();
+				const session = await window.ai.languageModel.create();
 
 				const stream = session.promptStreaming(
 					`You are a writing assistant tasked with providing feedback on content and rephrasing texts to make them more readable and contain less errors. From the following user-provided text, extract a short, memorable quote that can be easily shared in a tweet. The text is in English. Use English (US) grammer. Do not make spelling mistakes. Here is the text:
