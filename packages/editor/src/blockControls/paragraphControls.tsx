@@ -72,7 +72,7 @@ export function ParagraphControls( { setAttributes, clientId } ) {
 			length,
 		} );
 
-		const stream = await rewriter.rewriteStreaming( postContent, {
+		const stream = rewriter.rewriteStreaming( postContent, {
 			context:
 				'Avoid any toxic language and be as constructive as possible.',
 		} );
@@ -104,7 +104,7 @@ export function ParagraphControls( { setAttributes, clientId } ) {
 			sharedContext: 'A blog post',
 		} );
 
-		const stream = await summarizer.summarizeStreaming( postContent, {
+		const stream = summarizer.summarizeStreaming( postContent, {
 			context:
 				'Avoid any toxic language and be as constructive as possible.',
 		} );
