@@ -1,0 +1,35 @@
+{
+	"name": "@ai-experiments/translate-button",
+	"version": "0.0.1",
+	"description": "translate button",
+	"private": true,
+	"author": "",
+	"license": "Apache-2.0",
+	"keywords": [],
+	"homepage": "https://github.com/swissspidy/ai-eexperiments/tree/HEAD/packages/edit-post/README.md",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/swissspidy/ai-eexperiments.git",
+		"directory": "packages/edit-post"
+	},
+	"bugs": {
+		"url": "https://github.com/swissspidy/ai-eexperiments/issues"
+	},
+	"engines": {
+		"node": ">=20"
+	},
+	"main": "dist/index.js",
+	"types": "dist-types/index.d.ts",
+	"source": "src/index.ts",
+	"exports": {
+		".": {
+			"default": "./src/index.ts"
+		}
+	},
+	"dependencies": {
+		"@wordpress/block-editor": "^14.5.0",
+		"@wordpress/blocks": "^13.5.0",
+		"@wordpress/i18n": "^5.0.0",
+		"@wordpress/interactivity": "^6.10.0"
+	}
+}
