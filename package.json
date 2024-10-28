@@ -33,7 +33,7 @@
 		"@types/jest": "^29.5.14",
 		"@types/node": "^22.8.1",
 		"@types/wordpress__blocks": "^12.5.14",
-		"@types/wordpress__editor": "^14.3.0",
+		"@types/wordpress__editor": "^14.3.1",
 		"@wordpress/dependency-extraction-webpack-plugin": "^6.10.0",
 		"@wordpress/eslint-plugin": "^21.3.0",
 		"@wordpress/scripts": "^30.3.0",
