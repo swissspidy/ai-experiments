@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "37798f80f327e88c30df1126b639f61f",
+    "content-hash": "15ca1ddf0943ff664cc2336672ef6df8",
     "packages": [],
     "packages-dev": [
         {
@@ -3519,21 +3519,21 @@
         },
         {
             "name": "yoast/phpunit-polyfills",
-            "version": "2.x-dev",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Yoast/PHPUnit-Polyfills.git",
-                "reference": "c4de047119d847b5ba5cdb4b17613466cc856cba"
+                "reference": "19e6d5fb8aad31f731f774f9646a10c64a8843d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Yoast/PHPUnit-Polyfills/zipball/c4de047119d847b5ba5cdb4b17613466cc856cba",
-                "reference": "c4de047119d847b5ba5cdb4b17613466cc856cba",
+                "url": "https://api.github.com/repos/Yoast/PHPUnit-Polyfills/zipball/19e6d5fb8aad31f731f774f9646a10c64a8843d2",
+                "reference": "19e6d5fb8aad31f731f774f9646a10c64a8843d2",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.6",
-                "phpunit/phpunit": "^5.7.21 || ^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0"
+                "php": ">=7.0",
+                "phpunit/phpunit": "^6.4.4 || ^7.0 || ^8.0 || ^9.0 || ^11.0"
             },
             "require-dev": {
                 "php-parallel-lint/php-console-highlighter": "^1.0.0",
@@ -3578,7 +3578,7 @@
                 "security": "https://github.com/Yoast/PHPUnit-Polyfills/security/policy",
                 "source": "https://github.com/Yoast/PHPUnit-Polyfills"
             },
-            "time": "2024-10-13T18:36:01+00:00"
+            "time": "2024-09-07T00:24:25+00:00"
         }
     ],
     "aliases": [],
@@ -3593,7 +3593,7 @@
         "php": ">=8.0",
         "ext-json": "*"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "platform-overrides": {
         "php": "8.0.28"
     },
