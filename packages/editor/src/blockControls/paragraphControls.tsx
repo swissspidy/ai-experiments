@@ -2,11 +2,13 @@ import {
 	BlockControls,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
-import { serialize } from '@wordpress/blocks';
+import { getBlockContent, serialize } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import { ToolbarDropdownMenu } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
+
+import { translate as translateString } from '../utils';
 
 const penSparkIcon = () => (
 	<svg
@@ -127,6 +129,33 @@ export function ParagraphControls( { setAttributes, clientId } ) {
 		setInProgress( false );
 	}
 
+	async function translate( targetLanguage: string ) {
+		setInProgress( true );
+
+		try {
+			const block = getBlock( clientId );
+			const blockContent = getBlockContent( block );
+
+			const result = await translateString(
+				blockContent,
+				targetLanguage
+			);
+
+			if ( null === result ) {
+				return;
+			}
+
+			void setAttributes( {
+				content: result,
+			} );
+		} catch ( e ) {
+			// eslint-disable-next-line no-console
+			console.log( 'Error happened', e );
+		} finally {
+			setInProgress( false );
+		}
+	}
+
 	const controls = [
 		{
 			title: __( 'Summarize', 'ai-experiments' ),
@@ -153,14 +182,21 @@ export function ParagraphControls( { setAttributes, clientId } ) {
 			icon: undefined,
 		},
 		{
-			title: __( 'Formal', 'ai-experiments' ),
+			title: __( 'Make formal', 'ai-experiments' ),
 			onClick: () => rewrite( 'formal' ),
 			role: 'menuitemradio',
 			icon: undefined,
 		},
 		{
-			title: __( 'Informal', 'ai-experiments' ),
+			title: __( 'Make informal', 'ai-experiments' ),
 			onClick: () => rewrite( 'informal' ),
+			role: 'menuitemradio',
+			icon: undefined,
+		},
+		// TODO: Add ability to choose language.
+		{
+			title: __( 'Translate', 'ai-experiments' ),
+			onClick: () => translate( 'es' ),
 			role: 'menuitemradio',
 			icon: undefined,
 		},

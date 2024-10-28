@@ -1,20 +1,20 @@
 declare global {
 	interface Translation {
-		canDetect(): Promise< TranslationAvailability >;
-		createDetector(): Promise< LanguageDetector >;
+		canTranslate(): Promise< TranslationAvailability >;
+		createTranslator(options: CreateTranslatorArgs): Promise< Translator >;
+	}
+
+	interface CreateTranslatorArgs {
+		sourceLanguage: Intl.UnicodeBCP47LocaleIdentifier;
+		targetLanguage: Intl.UnicodeBCP47LocaleIdentifier;
 	}
 
 	type TranslationAvailability = 'readily' | 'after-download' | 'no';
 
-	interface LanguageDetector extends EventTarget {
+	interface Translator extends EventTarget {
 		ready: Promise< undefined >;
 		ondownloadprogress?( evt: Event ): void;
-		detect( input: string ): Promise< LanguageDetectionResult[] >;
-	}
-
-	interface LanguageDetectionResult {
-		confidence: number;
-		LanguageDetectionResult: string;
+		translate( input: string ): Promise< string >;
 	}
 
 	interface WindowOrWorkerGlobalScope {
