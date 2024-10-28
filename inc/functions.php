@@ -153,6 +153,15 @@ function enqueue_block_editor_assets(): void {
 
 	wp_set_script_translations( 'ai-experiments-editor', 'ai-experiments' );
 
+	wp_enqueue_style(
+		'ai-experiments-editor',
+		plugins_url( 'build/style-editor.css', __DIR__ ),
+		array( 'wp-components' ),
+		$asset['version']
+	);
+
+	wp_style_add_data( 'media-experiments-editor', 'rtl', 'replace' );
+
 	$asset_file = dirname( __DIR__ ) . '/build/summarize-button.asset.php';
 	$asset      = is_readable( $asset_file ) ? require $asset_file : [];
 
@@ -188,6 +197,33 @@ function enqueue_block_editor_assets(): void {
 
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\enqueue_block_editor_assets' );
 
+/**
+ * Enqueues scripts for the block editor, iframed.
+ *
+ * @return void
+ */
+function enqueue_block_assets(): void {
+	if ( ! is_admin() ) {
+		return;
+	}
+
+	$asset_file = dirname( __DIR__ ) . '/build/editor.asset.php';
+	$asset      = is_readable( $asset_file ) ? require $asset_file : [];
+
+	$asset['dependencies'] = $asset['dependencies'] ?? [];
+	$asset['version']      = $asset['version'] ?? '';
+
+	wp_enqueue_style(
+		'ai-experiments-editor',
+		plugins_url( 'build/style-editor.css', __DIR__ ),
+		array( 'wp-components' ),
+		$asset['version']
+	);
+
+	wp_style_add_data( 'media-experiments-editor', 'rtl', 'replace' );
+}
+
+add_action( 'enqueue_block_assets', __NAMESPACE__ . '\enqueue_block_assets' );
 
 /**
  * Registers assets for the frontend.
