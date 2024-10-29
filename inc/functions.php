@@ -285,14 +285,14 @@ function render_translate_block( $attributes, string $content, WP_Block $block )
 	);
 
 	$context = [
-		'isTranslatable' => false,
-		'isLoading'      => false,
-		'isShowingTranslation'      => false,
-		'translation'    => null,
-		'commentId'      => $block->context['commentId'],
-		'buttonText'     => __( 'Translate', 'ai-experiments' ),
-		'sourceLanguage' => explode( '_', get_locale() )[ 0 ],
-		'targetLanguage' => explode( '_', get_locale() )[ 0 ],
+		'isTranslatable'       => false,
+		'isLoading'            => false,
+		'isShowingTranslation' => false,
+		'translation'          => null,
+		'commentId'            => $block->context['commentId'],
+		'buttonText'           => __( 'Translate', 'ai-experiments' ),
+		'sourceLanguage'       => explode( '_', get_locale() )[0],
+		'targetLanguage'       => explode( '_', get_locale() )[0],
 	];
 
 	ob_start();
