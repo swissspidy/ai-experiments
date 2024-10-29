@@ -40,6 +40,7 @@
 		"@wordpress/commands": "^1.5.0",
 		"@wordpress/components": "^28.6.0",
 		"@wordpress/data": "^10.10.0",
+		"@wordpress/dom": "^4.10.0",
 		"@wordpress/editor": "^14.10.0",
 		"@wordpress/element": "^6.10.0",
 		"@wordpress/i18n": "^5.0.0",

@@ -3,6 +3,7 @@ import { addFilter } from '@wordpress/hooks';
 
 import { ParagraphControls } from './paragraphControls';
 import { ImageControls } from './imageControls';
+import { Autocomplete } from './autocomplete';
 
 const addAiControls = createHigherOrderComponent(
 	( BlockEdit ) => ( props ) => {
@@ -11,6 +12,7 @@ const addAiControls = createHigherOrderComponent(
 				<>
 					<BlockEdit { ...props } />
 					<ParagraphControls { ...props } />
+					<Autocomplete { ...props } />
 				</>
 			);
 		}
