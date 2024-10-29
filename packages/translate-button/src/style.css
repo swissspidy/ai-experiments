@@ -1,0 +1,19 @@
+.ai-translation-button svg {
+	fill: currentColor;
+}
+
+.ai-translation-button {
+	display: none !important;
+}
+
+.ai-translation-button.visible {
+	display: flex !important;
+}
+
+.ai-translation-text {
+	display: none;
+}
+
+.ai-translation-text.visible {
+	display: block;
+}

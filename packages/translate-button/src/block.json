@@ -1,18 +1,18 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "ai-experiments/summarize-button",
+	"name": "ai-experiments/translate-button",
 	"version": "0.0.1",
-	"title": "Summarize",
+	"title": "Translate",
 	"category": "widgets",
-	"description": "Block that allows summarizing the post content",
+	"description": "Block that allows translating a comment",
 	"supports": {
 		"html": false,
 		"layout": true,
 		"interactivity": true
 	},
-	"textdomain": "ai-experiments",
+	"textdomain": "translate-button",
 	"blockHooks": {
-		"core/post-content": "before"
+		"core/comment-content": "after"
 	}
 }

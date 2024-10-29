@@ -16,6 +16,10 @@ const regular = {
 			__dirname,
 			'packages/summarize-button/src/index.tsx'
 		),
+		'translate-button': resolve(
+			__dirname,
+			'packages/translate-button/src/index.tsx'
+		),
 	},
 	output: {
 		filename: '[name].js',
@@ -102,6 +106,10 @@ const modules = {
 			__dirname,
 			'packages/summarize-button/src/view.ts'
 		),
+		'translate-button-view': resolve(
+			__dirname,
+			'packages/translate-button/src/view.ts'
+		),
 	},
 	output: {
 		...regular.output,
@@ -119,7 +127,10 @@ const modules = {
 		new DependencyExtractionWebpackPlugin( {
 			// With modules, use `requestToExternalModule`:
 			requestToExternalModule( request ) {
-				if ( request === '@ai-experiments/summarize-block' ) {
+				if (
+					request === '@ai-experiments/summarize-block' ||
+					request === '@ai-experiments/translate-block'
+				) {
 					return request;
 				}
 			},

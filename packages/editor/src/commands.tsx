@@ -8,9 +8,17 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import { store as editorStore } from '@wordpress/editor';
 import { __ } from '@wordpress/i18n';
-import { pasteHandler, serialize, createBlock } from '@wordpress/blocks';
+import {
+	pasteHandler,
+	serialize,
+	createBlock,
+	getBlockContent,
+	type BlockInstance,
+} from '@wordpress/blocks';
 import { useState } from '@wordpress/element';
 import { registerPlugin } from '@wordpress/plugins';
+import { language } from '@wordpress/icons';
+import { translate as translateString } from './utils';
 
 const PenSparkIcon = () => (
 	<svg
@@ -66,15 +74,24 @@ function useAICommandLoader() {
 
 	const [ isLoading ] = useState( false );
 
-	const { postContent } = useSelect( ( select ) => {
-		const content =
-			new window.DOMParser().parseFromString(
+	const { blocks, plainTextContent } = useSelect( ( select ) => {
+		const allBlocks: BlockInstance[] = select( blockEditorStore )
+			// @ts-ignore
+			.getClientIdsWithDescendants()
+			.map( ( clientId: string ) =>
 				// @ts-ignore
-				serialize( select( blockEditorStore ).getBlocks() ),
+				select( blockEditorStore ).getBlock( clientId )
+			);
+
+		// @ts-ignore
+		const content: string =
+			new window.DOMParser().parseFromString(
+				serialize( allBlocks ),
 				'text/html'
 			).body.textContent || '';
 		return {
-			postContent: content,
+			blocks: allBlocks,
+			plainTextContent: content,
 		};
 	}, [] );
 
@@ -146,7 +163,7 @@ function useAICommandLoader() {
 				const session = await window.ai.languageModel.create();
 
 				const stream = session.promptStreaming(
-					`Summarise the following text in full sentences in less than 300 characters: ${ postContent }`
+					`Summarise the following text in full sentences in less than 300 characters: ${ plainTextContent }`
 				);
 
 				let result = '';
@@ -219,7 +236,7 @@ Provide the output as a comma-separated list of numeric term IDs.
 
 Content:
 
-${ postContent }`
+${ plainTextContent }`
 						.replaceAll( '\t', '' )
 						.replaceAll( '\n\n\n\n', '\n\n' );
 
@@ -255,7 +272,7 @@ ${ postContent }`
 				const session = await window.ai.languageModel.create();
 
 				const stream = session.promptStreaming(
-					`What is the overall vibe of this content? Only respond with "positive" or "negative". Do not provide any explanation for your answer. ${ postContent }`
+					`What is the overall vibe of this content? Only respond with "positive" or "negative". Do not provide any explanation for your answer. ${ plainTextContent }`
 				);
 
 				let result = '';
@@ -267,8 +284,6 @@ ${ postContent }`
 
 				// eslint-disable-next-line no-alert -- For testing only.
 				alert( result );
-
-				close();
 			},
 		},
 		{
@@ -283,7 +298,7 @@ ${ postContent }`
 
 				const stream = session.promptStreaming(
 					`You are a writing assistant tasked with providing feedback on content and rephrasing texts to make them more readable and contain less errors. From the following user-provided text, extract a short, memorable quote that can be easily shared in a tweet. The text is in English. Use English (US) grammer. Do not make spelling mistakes. Here is the text:
-					${ postContent }`
+					${ plainTextContent }`
 				);
 
 				let result = '';
@@ -315,8 +330,47 @@ ${ postContent }`
 				}
 
 				void __unstableMarkLastChangeAsPersistent();
-
+			},
+		},
+		{
+			name: 'ai-experiments/translate',
+			label: __( 'Translate content', 'ai-experiments' ),
+			icon: language,
+			// @ts-ignore
+			callback: async ( { close } ) => {
 				close();
+
+				// Translate all blocks separately in parallel.
+				await Promise.allSettled(
+					blocks.map( async ( block: BlockInstance ) => {
+						if ( [ 'core/code' ].includes( block.name ) ) {
+							return;
+						}
+
+						const blockContent = getBlockContent( block );
+
+						const result = await translateString(
+							blockContent,
+							'es'
+						);
+
+						if ( null === result ) {
+							return;
+						}
+
+						const parsedBlocks = pasteHandler( {
+							plainText: result,
+							mode: 'BLOCKS',
+						} );
+
+						if ( parsedBlocks.length > 0 ) {
+							void __unstableMarkNextChangeAsNotPersistent();
+							replaceBlock( block.clientId, parsedBlocks );
+						}
+					} )
+				);
+
+				void __unstableMarkLastChangeAsPersistent();
 			},
 		},
 	];

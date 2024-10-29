@@ -24,8 +24,8 @@ updates:
               patterns:
                   - '@wordpress/*'
           types:
-            patterns:
-              - '@types/*'
+              patterns:
+                  - '@types/*'
           lint:
               patterns:
                   - 'eslint'
