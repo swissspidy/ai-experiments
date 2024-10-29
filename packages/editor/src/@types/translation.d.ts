@@ -1,7 +1,9 @@
 declare global {
 	interface Translation {
 		canTranslate(): Promise< TranslationAvailability >;
-		createTranslator(options: CreateTranslatorArgs): Promise< Translator >;
+		createTranslator(
+			options: CreateTranslatorArgs
+		): Promise< Translator >;
 	}
 
 	interface CreateTranslatorArgs {

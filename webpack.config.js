@@ -127,7 +127,10 @@ const modules = {
 		new DependencyExtractionWebpackPlugin( {
 			// With modules, use `requestToExternalModule`:
 			requestToExternalModule( request ) {
-				if ( request === '@ai-experiments/summarize-block' || request === '@ai-experiments/translate-block' ) {
+				if (
+					request === '@ai-experiments/summarize-block' ||
+					request === '@ai-experiments/translate-block'
+				) {
 					return request;
 				}
 			},
