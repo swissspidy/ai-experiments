@@ -354,8 +354,6 @@ ${ plainTextContent }`
 							'es'
 						);
 
-						console.log( blockContent, result );
-
 						if ( null === result ) {
 							return;
 						}
