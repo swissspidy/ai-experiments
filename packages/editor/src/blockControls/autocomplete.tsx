@@ -217,7 +217,7 @@ export function Autocomplete( {
 								'iframe[name="editor-canvas"]'
 							) as HTMLIFrameElement
 						 )?.contentDocument as Document
-					 ).querySelector( `#block-${ clientId }` ) as HTMLElement,
+					 )?.querySelector( `#block-${ clientId }` ) as HTMLElement,
 					true
 				);
 

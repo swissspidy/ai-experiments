@@ -13,6 +13,7 @@
 	},
 	"textdomain": "ai-experiments",
 	"blockHooks": {
-		"core/post-content": "before"
+		"core/post-content": "before",
+		"core/comment-template": "before"
 	}
 }
