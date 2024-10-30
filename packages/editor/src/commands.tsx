@@ -181,6 +181,101 @@ function useAICommandLoader() {
 			},
 		},
 		{
+			name: 'ai-experiments/write-title',
+			label: __( 'Write title', 'ai-experiments' ),
+			icon: <PenSparkIcon />,
+			// @ts-ignore
+			callback: async ( { close } ) => {
+				close();
+
+				// const summarizer = await window.ai.summarizer.create( {
+				// 	sharedContext: 'A blog post',
+				// 	type: 'headline',
+				// 	format: 'plain-text',
+				// 	length: 'medium',
+				// } );
+				//
+				// const stream = summarizer.summarizeStreaming(
+				// 	plainTextContent.slice( 0, 1000 ),
+				// 	{
+				// 		context:
+				// 			'Avoid any toxic language and be as constructive as possible.',
+				// 	}
+				// );
+
+				const session = await window.ai.languageModel.create();
+
+				const stream = session.promptStreaming(
+					`Write a plain-text headline for the following text in less than 100 characters: ${ plainTextContent }`
+				);
+
+				let result = '';
+
+				for await ( const value of stream ) {
+					// Each result contains the full data, not just the incremental part.
+					result = value;
+				}
+
+				result = result.trim();
+				result = result.replaceAll( /\.$/g, '' );
+
+				editPost( { title: result } );
+			},
+		},
+		{
+			name: 'ai-experiments/generate-permalink',
+			label: __( 'Generate permalink', 'ai-experiments' ),
+			icon: <PenSparkIcon />,
+			// @ts-ignore
+			callback: async ( { close } ) => {
+				close();
+
+				const session = await window.ai.languageModel.create( {
+					initialPrompts: [
+						{
+							role: 'system',
+							content:
+								'Write a plain-text URL slug for for the following text in less than 100 character',
+						},
+						{
+							role: 'user',
+							content:
+								'At WordCamp US 2024 I gave a presentation about client-side media processing, which is all about bringing WordPress’ media uploading and editing capabilities from the server to the browser. The recording is not yet available, but in the meantime you can re-watch the livestream or check out the slides. This blog post is a written adaption of this talk.',
+						},
+						{
+							role: 'assistant',
+							content: 'wordpress-media-processing',
+						},
+						{
+							role: 'user',
+							content:
+								'Learn how to leverage WordPress Playground and Blueprints for automated end-to-end browser and performance testing.',
+						},
+						{
+							role: 'assistant',
+							content: 'wordpress-playground-testing',
+						},
+					],
+				} );
+
+				const stream = session.promptStreaming(
+					` ${ plainTextContent }`
+				);
+
+				let result = '';
+
+				for await ( const value of stream ) {
+					// Each result contains the full data, not just the incremental part.
+					result = value;
+				}
+
+				result = result.trim();
+				result = result.replaceAll( /\.$/g, '' );
+
+				editPost( { slug: result } );
+			},
+		},
+		{
 			name: 'ai-experiments/assign-tags',
 			label: __( 'Assign tags and categories', 'ai-experiments' ),
 			icon: <LabelAutoIcon />,
