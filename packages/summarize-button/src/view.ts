@@ -1,63 +1,79 @@
 /**
  * WordPress dependencies
  */
-import { store } from '@wordpress/interactivity';
+import { store, getContext } from '@wordpress/interactivity';
 
 async function summarizePostContent() {
-	const summarizer = await window.ai.summarizer.create();
 	const postContent =
 		document.querySelector( '.wp-block-post-content' )?.textContent || '';
-	return summarizer.summarize( postContent );
+	const summarizer = await window.ai.summarizer.create( {
+		sharedContext: 'A blog post',
+		format: 'plain-text',
+	} );
+	return summarizer.summarize( postContent, {
+		context: 'Avoid any toxic language and be as constructive as possible.',
+	} );
 }
 
-const { state, actions } = store(
+async function summarizeComments() {
+	let allComments = '';
+	document
+		.querySelectorAll( '.wp-block-comment-content' )
+		.forEach( ( node ) => ( allComments += node.textContent + '\n\n' ) );
+	const summarizer = await window.ai.summarizer.create( {
+		sharedContext: 'A list of user-generated comments on a blog post',
+		format: 'plain-text',
+		type: 'tl;dr',
+	} );
+	return summarizer.summarize( allComments, {
+		context: 'Avoid any toxic language and be as constructive as possible.',
+	} );
+}
+
+type BlockContext = {
+	summaryContext: string;
+	summary: string;
+	isOpen: boolean;
+	isLoading: boolean;
+	buttonText: string;
+};
+
+store(
 	'ai-experiments/summarize-button',
 	{
 		state: {
-			overlayEnabled: false,
-			summary: null,
-			buttonText: 'Summarize post content',
 			get isLoading(): boolean {
-				return state.overlayEnabled && state.summary === null;
-			},
-			get isReady(): boolean {
-				return state.overlayEnabled && state.summary !== null;
+				const context = getContext< BlockContext >();
+				return context.isOpen && ! context.summary;
 			},
 		},
 		actions: {
-			*showLightbox() {
-				state.overlayEnabled = true;
+			*generateSummary() {
+				const context = getContext< BlockContext >();
 
-				if ( state.summary === null ) {
-					state.buttonText = 'Loading...';
+				context.isOpen = ! context.isOpen;
 
-					state.summary = yield summarizePostContent();
-				}
+				if ( ! context.summary ) {
+					context.isLoading = true;
+					context.buttonText = 'Loading...';
 
-				state.buttonText = 'Summarize post content';
-			},
-			hideLightbox() {
-				state.overlayEnabled = false;
-			},
-			handleKeydown( event: KeyboardEvent ) {
-				if ( state.overlayEnabled ) {
-					if ( event.key === 'Escape' ) {
-						actions.hideLightbox();
+					if ( 'post' === context.summaryContext ) {
+						context.summary = yield summarizePostContent();
+					} else {
+						context.summary = yield summarizeComments();
 					}
+
+					context.buttonText = 'Read AI-generated summary';
+					context.isLoading = false;
 				}
 			},
 		},
 		callbacks: {
-			toggleModal: () => {
-				const dialog = document.querySelector(
-					'.ai-summary-lightbox-overlay'
-				) as HTMLDialogElement;
+			closeSummary: () => {
+				const context = getContext< BlockContext >();
 
-				if ( state.overlayEnabled ) {
-					dialog.showModal();
-				} else {
-					dialog.close();
-				}
+				context.isOpen = ! context.isOpen;
+				context.buttonText = 'Read AI-generated summary';
 			},
 		},
 	},

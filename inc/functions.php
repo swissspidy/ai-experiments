@@ -46,19 +46,36 @@ function render_summarize_block( $attributes, string $content, WP_Block $block )
 		)
 	);
 
+	$id = wp_generate_uuid4();
+
+	$popover_button_id = "ai-summary-button=$id";
+	$popover_id        = "ai-summary-popover=$id";
+
+	$summary_context = $attributes['context'] ?? 'post';
+
+	$context = [
+		'summary'        => '',
+		'summaryContext' => $summary_context,
+		'isLoading'      => false,
+		'isOpen'         => false,
+		'buttonText'     => __( 'Read AI-generated summary', 'ai-experiments' ),
+	];
+
 	ob_start();
 	?>
 	<div
 			<?php echo WP_Block_Supports::$block_to_render ? get_block_wrapper_attributes() : ''; ?>
+			<?php echo wp_interactivity_data_wp_context( $context ); ?>
+			data-wp-interactive="ai-experiments/summarize-button"
 	>
 		<button
 				class="ai-summary-button wp-block-button__link is-layout-flex"
-				data-wp-interactive="ai-experiments/summarize-button"
-				data-wp-on-async--click="actions.showLightbox"
-				data-wp-class--visible="state.overlayEnabled"
-				data-wp-class--loading="state.isLoading"
-				data-wp-bind--disabled="state.isLoading"
-				data-wp-watch="callbacks.toggleModal"
+				id="<?php echo esc_attr( $popover_button_id ); ?>"
+				popovertarget="<?php echo esc_attr( $popover_id ); ?>"
+				popovertargetaction="toggle"
+				data-wp-on-async--click="actions.generateSummary"
+				data-wp-class--loading="context.isLoading"
+				data-wp-bind--disabled="context.isLoading"
 		>
 			<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -70,39 +87,52 @@ function render_summarize_block( $attributes, string $content, WP_Block $block )
 				<path d="M480-80q0-83-31.5-156T363-363q-54-54-127-85.5T80-480q83 0 156-31.5T363-597q54-54 85.5-127T480-880q0 83 31.5 156T597-597q54 54 127 85.5T880-480q-83 0-156 31.5T597-363q-54 54-85.5 127T480-80Z" />
 			</svg>
 
-			<span data-wp-text="state.buttonText">
-				<?php esc_html_e( 'Summarize post content', 'ai-experiments' ); ?>
+			<span data-wp-text="context.buttonText">
+				<?php esc_html_e( 'Read AI-generated summary', 'ai-experiments' ); ?>
 			</span>
 		</button>
+		<div
+			class="ai-summary-popover"
+			id="<?php echo esc_attr( $popover_id ); ?>"
+			anchor="<?php echo esc_attr( $popover_button_id ); ?>"
+			popover
+		>
+			<button
+				class="ai-summary-popover-close"
+				popovertarget="<?php echo esc_attr( $popover_id ); ?>"
+				popovertargetaction="hide"
+				data-wp-on-async--click="actions.closeSummary"
+			>
+				<?php esc_html_e( 'Close', 'ai-experiments' ); ?>
+			</button>
+			<p data-wp-text="context.summary"></p>
+		</div>
 	</div>
 	<?php
 	return (string) ob_get_clean();
 }
 
+
 /**
- * Renders the post summary overlay.
+ * Filters hooked blocks to change summary type.
+ *
+ * This way the same block can be used to summarize both comments and posts.
+ *
+ * @param array|null $hooked_block The parsed block array for the given hooked block type, or null to suppress the block.
+ * @param string     $hooked_block_type   The hooked block type name.
+ * @param string     $relative_position   The relative position of the hooked block.
+ * @param array      $anchor_block The anchor block, in parsed block array format.
+ * @return array Filtered block data.
  */
-function render_summary_overlay() {
-	?>
-		<dialog
-			class="ai-summary-lightbox-overlay"
-			data-wp-interactive="ai-experiments/summarize-button"
-			data-wp-on--keydown="actions.handleKeydown"
-			>
-			<form method="dialog">
-				<button type="button" aria-label="<?php esc_attr_e( 'Close', 'ai-experiments' ); ?>" class="close-button" data-wp-on-async--click="actions.hideLightbox">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M13 11.8l6.1-6.3-1-1-6.1 6.2-6.1-6.2-1 1 6.1 6.3-6.5 6.7 1 1 6.5-6.6 6.5 6.6 1-1z"></path></svg>
-				</button>
-			</form>
-			<div data-wp-text="state.summary" data-wp-class--visible="state.isReady" class="summary"></div>
-			<div data-wp-class--visible="state.isLoading" class="loading">
-				<?php esc_html_e( 'Generating summary...', 'ai-experiments' ); ?>
-			</div>
-		</dialog>
-	<?php
+function set_summarize_context_based_on_adjacent_block( $hooked_block, $hooked_block_type, $relative_position, $anchor_block ) {
+	if ( 'core/comment-template' === $anchor_block['blockName'] ) {
+		$hooked_block['attrs']['context'] = 'comments';
+	}
+
+	return $hooked_block;
 }
 
-add_action( 'wp_footer', __NAMESPACE__ . '\render_summary_overlay' );
+add_filter( 'hooked_block_ai-experiments/summarize-button', __NAMESPACE__ . '\set_summarize_context_based_on_adjacent_block', 10, 4 );
 
 /**
  * Filters hooked blocks to inherit the layout attribute
@@ -338,7 +368,6 @@ function render_translate_block( $attributes, string $content, WP_Block $block )
 		<?php echo wp_interactivity_data_wp_context( $context ); ?>
 		data-wp-interactive="ai-experiments/translate-button"
 	>
-		<summary></summary>
 		<button
 			class="ai-translation-button wp-block-button__link is-style-outline is-layout-flex"
 			data-wp-init="callbacks.checkIfTranslatable"

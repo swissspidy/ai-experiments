@@ -94,7 +94,6 @@ export async function translate( content: string, targetLanguage: string ) {
 	return translator.translate( content );
 }
 
-// Defines the types of your context.
 type BlockContext = {
 	commentId: string;
 	isTranslatable: boolean | null;

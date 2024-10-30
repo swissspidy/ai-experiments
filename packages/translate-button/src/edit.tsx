@@ -9,7 +9,7 @@ export default function Edit( {
 	return (
 		<div { ...blockProps }>
 			<button className="wp-block-button__link" disabled>
-				<span>{ __( 'translate content', 'ai-experiments' ) }</span>
+				<span>{ __( 'Translate', 'ai-experiments' ) }</span>
 			</button>
 		</div>
 	);
