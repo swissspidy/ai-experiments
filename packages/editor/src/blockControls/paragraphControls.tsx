@@ -6,7 +6,10 @@ import { getBlockContent, serialize } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import { ToolbarDropdownMenu } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
+import { store as coreStore } from '@wordpress/core-data';
+import { store as editorStore } from '@wordpress/editor';
 import { useState } from '@wordpress/element';
+import { RichTextData } from '@wordpress/rich-text';
 
 import { translate as translateString } from '../utils';
 
@@ -36,7 +39,74 @@ export function ParagraphControls( { setAttributes, clientId } ) {
 		};
 	}, [] );
 
+	const { mostRecentPost } = useSelect( ( select ) => {
+		// @ts-ignore
+		const postType = select( editorStore ).getCurrentPostType();
+		const { getEntityRecords } = select( coreStore );
+
+		// @ts-ignore
+		const posts = getEntityRecords( 'postType', postType, {
+			per_page: 1,
+			status: 'publish',
+			_fields: 'id,content',
+		} );
+
+		return {
+			mostRecentPost: posts && posts.length > 0 ? posts[ 0 ] : null,
+		};
+	}, [] );
+
 	const [ inProgress, setInProgress ] = useState( false );
+
+	async function write() {
+		setInProgress( true );
+
+		const postContent = serialize( [ getBlock( clientId ) ] );
+
+		let context = `
+		Avoid any toxic language and be as constructive as possible.
+		`;
+
+		const session = await window.ai.languageModel.create();
+
+		if ( mostRecentPost ) {
+			const result = await session?.prompt(
+				`
+					You are an AI writing assistant. Your goal is to help users with writing tasks by analyzing their writing and writing instructions for generating relevant and high-quality text in the same tone. You do NOT answer questions, you simply write on behalf of a user. Focus on producing error-free and engaging writing. Do not explain your response, just provide the generated instructions.
+					Describe the tone of the following text so the same tone can be used for future writing tasks. DO NOT mention the topic of the text itself, focus only on the tone. Respond with instructions that you would give yourself for writing texts in a similar writing style. Use plain-text, NO markup. ONLY respond with the instructions, nothing else. Keep it short.
+
+	This is the text:
+
+	${ mostRecentPost.content.rendered.slice( 0, 500 ) }`
+			);
+
+			context += `\n${ result }`;
+		}
+
+		const stream = session.promptStreaming(
+			`You are an AI writing assistant. Your goal is to help users with writing tasks by generating relevant and high-quality text. You do NOT answer questions, you simply write on behalf of a user. Consider the "input" (writing task) and the "context" (extra information) to tailor your response. Focus on producing error-free and engaging writing. Do not explain your response, just provide the generated text.
+
+Input: ${ postContent }
+Context:  ${ context }`
+		);
+
+		let result = '';
+
+		for await ( const value of stream ) {
+			// Each result contains the full data, not just the incremental part.
+			result = value;
+
+			void __unstableMarkNextChangeAsNotPersistent();
+
+			void setAttributes( {
+				content: RichTextData.fromPlainText( result ),
+			} );
+		}
+
+		void __unstableMarkLastChangeAsPersistent();
+
+		setInProgress( false );
+	}
 
 	async function rewrite( type: string ) {
 		setInProgress( true );
@@ -157,6 +227,12 @@ export function ParagraphControls( { setAttributes, clientId } ) {
 	}
 
 	const controls = [
+		{
+			title: __( 'Help me write', 'ai-experiments' ),
+			onClick: () => write(),
+			role: 'menuitemradio',
+			icon: undefined,
+		},
 		{
 			title: __( 'Summarize', 'ai-experiments' ),
 			onClick: () => summarize(),
