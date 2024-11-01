@@ -95,7 +95,7 @@ export async function translate( content: string, targetLanguage: string ) {
 }
 
 type BlockContext = {
-	commentId: string;
+	commentId: number | null;
 	isTranslatable: boolean | null;
 	isLoading: boolean;
 	isShowingTranslation: boolean;
@@ -125,33 +125,47 @@ store(
 				}
 
 				if ( ! context.translation ) {
-					const commentContent: HTMLElement = document.querySelector(
-						`#comment-${ context.commentId } .wp-block-comment-content`
-					) as HTMLElement;
+					if ( context.commentId ) {
+						const commentContent: HTMLElement =
+							document.querySelector(
+								`#comment-${ context.commentId } .wp-block-comment-content`
+							) as HTMLElement;
 
-					if ( ! commentContent.textContent ) {
-						return;
+						if ( ! commentContent.textContent ) {
+							return;
+						}
+
+						context.isLoading = true;
+						// context.buttonText = `Translating from ${ languageTagToHumanReadable(
+						// 	context.sourceLanguage,
+						// 	context.targetLanguage
+						// ) }`;
+
+						// TODO: Alternatively, use navigator.language as target.
+						context.translation = yield translate(
+							commentContent.textContent,
+							context.targetLanguage
+						);
+
+						// context.buttonText = `Translate from ${ languageTagToHumanReadable(
+						// 	context.sourceLanguage,
+						// 	context.targetLanguage
+						// ) }`;
+					} else {
+						const postContent =
+							document.querySelector( '.wp-block-post-content' )
+								?.textContent || '';
+
+						context.isLoading = true;
+
+						context.translation = yield translate(
+							postContent,
+							context.targetLanguage
+						);
 					}
-
-					context.isLoading = true;
-					// context.buttonText = `Translating from ${ languageTagToHumanReadable(
-					// 	context.sourceLanguage,
-					// 	context.targetLanguage
-					// ) }`;
-
-					context.translation = yield translate(
-						commentContent.textContent,
-						context.targetLanguage
-					);
-
-					context.isLoading = false;
-					context.isShowingTranslation = true;
-					// context.buttonText = `Translate from ${ languageTagToHumanReadable(
-					// 	context.sourceLanguage,
-					// 	context.targetLanguage
-					// ) }`;
 				}
 
+				context.isLoading = false;
 				context.isShowingTranslation = true;
 			},
 		},
@@ -159,29 +173,55 @@ store(
 			async checkIfTranslatable() {
 				const context = getContext< BlockContext >();
 
-				const commentContent = document.querySelector(
-					`#comment-${ context.commentId } .wp-block-comment-content`
-				);
+				// We're translating a comment into the same language as the post.
+				if ( context.commentId ) {
+					const commentContent = document.querySelector(
+						`#comment-${ context.commentId } .wp-block-comment-content`
+					);
 
-				if ( null === commentContent || ! commentContent.textContent ) {
-					return;
-				}
+					if ( ! commentContent || ! commentContent.textContent ) {
+						return;
+					}
 
-				const detectedLanguage = await detectSourceLanguage(
-					commentContent.textContent
-				);
+					const detectedLanguage = await detectSourceLanguage(
+						commentContent.textContent
+					);
 
-				if ( ! detectedLanguage ) {
-					return;
-				}
+					if ( ! detectedLanguage ) {
+						return;
+					}
 
-				if ( context.targetLanguage !== detectedLanguage ) {
-					context.isTranslatable = true;
-					context.sourceLanguage = detectedLanguage;
-					context.buttonText = `Translate from ${ languageTagToHumanReadable(
-						detectedLanguage,
-						context.targetLanguage
-					) }`;
+					if ( context.targetLanguage !== detectedLanguage ) {
+						context.isTranslatable = true;
+						context.sourceLanguage = detectedLanguage;
+						context.buttonText = `Translate from ${ languageTagToHumanReadable(
+							detectedLanguage,
+							context.targetLanguage
+						) }`;
+					}
+				} else {
+					const postContent =
+						document.querySelector( '.wp-block-post-content' )
+							?.textContent || '';
+
+					const detectedLanguage =
+						await detectSourceLanguage( postContent );
+
+					if ( ! detectedLanguage ) {
+						return;
+					}
+
+					context.targetLanguage =
+						navigator.language.split( '-' )[ 0 ];
+
+					if ( context.targetLanguage !== detectedLanguage ) {
+						context.isTranslatable = true;
+						context.sourceLanguage = detectedLanguage;
+						context.buttonText = `Translate from ${ languageTagToHumanReadable(
+							detectedLanguage,
+							context.targetLanguage
+						) }`;
+					}
 				}
 			},
 		},

@@ -355,7 +355,7 @@ function render_translate_block( $attributes, string $content, WP_Block $block )
 		'isLoading'            => false,
 		'isShowingTranslation' => false,
 		'translation'          => null,
-		'commentId'            => $block->context['commentId'],
+		'commentId'            => isset( $block->context['commentId'] ) ? (int) $block->context['commentId'] : null,
 		'buttonText'           => __( 'Translate', 'ai-experiments' ),
 		'sourceLanguage'       => explode( '_', get_locale() )[0],
 		'targetLanguage'       => explode( '_', get_locale() )[0],

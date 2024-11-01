@@ -13,6 +13,7 @@
 	},
 	"textdomain": "translate-button",
 	"blockHooks": {
+		"core/post-content": "before",
 		"core/comment-content": "after"
 	}
 }
