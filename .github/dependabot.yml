@@ -28,9 +28,13 @@ updates:
                   - '@types/*'
           lint:
               patterns:
-                  - 'eslint'
                   - 'oxlint'
                   - 'eslint-plugin-*'
+
+      ignore:
+          - dependency-name: 'eslint'
+            versions:
+                - '>= 9'
 
     - package-ecosystem: composer
       directory: '/'
