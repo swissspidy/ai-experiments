@@ -33,7 +33,7 @@
 		}
 	},
 	"dependencies": {
-		"@huggingface/transformers": "^3.0.2",
+		"@huggingface/transformers": "^3.1.2",
 		"@shopify/web-worker": "^6.4.0",
 		"@wordpress/block-editor": "^14.7.0",
 		"@wordpress/blocks": "^14.1.0",
