@@ -19,13 +19,13 @@
 		"node": ">=20"
 	},
 	"main": "dist/index.js",
-	"types": "dist-types/index.d.ts",
 	"source": "src/index.ts",
 	"exports": {
 		".": {
 			"default": "./src/index.ts"
 		}
 	},
+	"types": "dist-types/index.d.ts",
 	"dependencies": {
 		"@wordpress/block-editor": "^14.8.0",
 		"@wordpress/blocks": "^14.2.0",
