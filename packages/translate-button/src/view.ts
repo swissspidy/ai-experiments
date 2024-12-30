@@ -34,7 +34,7 @@ export async function detectSourceLanguage(
 		const [ bestResult ] = await detector.detect( textToTranslate );
 
 		if (
-			bestResult.detectedLangauge === null ||
+			bestResult.detectedLanguage === null ||
 			bestResult.confidence < 0.4
 		) {
 			// Return null to indicate no translation should happen.
