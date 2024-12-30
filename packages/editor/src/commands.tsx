@@ -392,7 +392,7 @@ ${ plainTextContent }`
 				const session = await window.ai.languageModel.create();
 
 				const stream = session.promptStreaming(
-					`You are a writing assistant tasked with providing feedback on content and rephrasing texts to make them more readable and contain less errors. From the following user-provided text, extract a short, memorable quote that can be easily shared in a tweet. The text is in English. Use English (US) grammer. Do not make spelling mistakes. Here is the text:
+					`You are a writing assistant tasked with providing feedback on content and rephrasing texts to make them more readable and contain less errors. From the following user-provided text, extract a short, memorable quote that can be easily shared in a tweet. The text is in English. Use English (US) grammar. Do not make spelling mistakes. Here is the text:
 					${ plainTextContent }`
 				);
 
