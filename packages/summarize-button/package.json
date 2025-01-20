@@ -27,9 +27,9 @@
 	},
 	"types": "dist-types/index.d.ts",
 	"dependencies": {
-		"@wordpress/block-editor": "^14.10.1",
+		"@wordpress/block-editor": "^14.11.0",
 		"@wordpress/blocks": "^14.2.0",
 		"@wordpress/i18n": "^5.13.0",
-		"@wordpress/interactivity": "^6.15.0"
+		"@wordpress/interactivity": "^6.16.0"
 	}
 }
