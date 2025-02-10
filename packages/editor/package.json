@@ -41,7 +41,7 @@
 		"@wordpress/components": "^28.13.0",
 		"@wordpress/data": "^10.17.0",
 		"@wordpress/dom": "^4.13.0",
-		"@wordpress/editor": "^14.17.0",
+		"@wordpress/editor": "^14.17.1",
 		"@wordpress/element": "^6.17.0",
 		"@wordpress/i18n": "^5.13.0",
 		"@wordpress/icons": "^10.13.0",
