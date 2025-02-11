@@ -68,7 +68,7 @@ export async function translate( content: string, targetLanguage: string ) {
 	// 	);
 	// }
 
-	const translator = await window.translation.createTranslator( {
+	const translator = await window.ai.translator.create( {
 		sourceLanguage,
 		targetLanguage,
 	} );
