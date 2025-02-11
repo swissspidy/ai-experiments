@@ -3,7 +3,7 @@
  */
 // @ts-ignore
 import { useCommandLoader } from '@wordpress/commands';
-import { store as coreStore } from '@wordpress/core-data';
+import { store as coreStore, type Term } from '@wordpress/core-data';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import { store as editorStore } from '@wordpress/editor';
@@ -81,7 +81,8 @@ function useAICommandLoader() {
 			.map( ( clientId: string ) =>
 				// @ts-ignore
 				select( blockEditorStore ).getBlock( clientId )
-			);
+			)
+			.filter( ( block ) => block !== null );
 
 		// @ts-ignore
 		const content: string =
@@ -122,7 +123,11 @@ function useAICommandLoader() {
 				return [
 					slug,
 					// @ts-ignore
-					getEntityRecords( 'taxonomy', slug, DEFAULT_QUERY ),
+					getEntityRecords(
+						'taxonomy',
+						slug,
+						DEFAULT_QUERY
+					) as Term[],
 				];
 			} )
 		);

@@ -1,0 +1,62 @@
+diff --git a/node_modules/@wordpress/core-data/build-types/dynamic-entities.d.ts b/node_modules/@wordpress/core-data/build-types/dynamic-entities.d.ts
+index 169fd3c..0f5b7ec 100644
+--- a/node_modules/@wordpress/core-data/build-types/dynamic-entities.d.ts
++++ b/node_modules/@wordpress/core-data/build-types/dynamic-entities.d.ts
+@@ -17,6 +17,7 @@ export type WPEntityTypes<C extends ET.Context = 'edit'> = {
+     Site: ET.Settings<C>;
+     Status: ET.PostStatusObject<C>;
+     Taxonomy: ET.Taxonomy<C>;
++    Term: ET.Term<C>;
+     Theme: ET.Theme<C>;
+     UnstableBase: ET.UnstableBase<C>;
+     User: ET.User<C>;
+diff --git a/node_modules/@wordpress/core-data/build-types/entity-types/index.d.ts b/node_modules/@wordpress/core-data/build-types/entity-types/index.d.ts
+index 7869a4f..4be939e 100644
+--- a/node_modules/@wordpress/core-data/build-types/entity-types/index.d.ts
++++ b/node_modules/@wordpress/core-data/build-types/entity-types/index.d.ts
+@@ -17,6 +17,7 @@ import type { PostRevision } from './post-revision';
+ import type { Settings } from './settings';
+ import type { Sidebar } from './sidebar';
+ import type { Taxonomy } from './taxonomy';
++import type { Term } from './term';
+ import type { Theme } from './theme';
+ import type { User } from './user';
+ import type { Type } from './type';
+@@ -25,7 +26,7 @@ import type { WidgetType } from './widget-type';
+ import type { WpTemplate } from './wp-template';
+ import type { WpTemplatePart } from './wp-template-part';
+ export type { BaseEntityRecords } from './base-entity-records';
+-export type { Attachment, Base as UnstableBase, Comment, Context, GlobalStylesRevision, MenuLocation, NavMenu, NavMenuItem, Page, Plugin, Post, PostRevision, PostStatusObject, Settings, Sidebar, Taxonomy, TemplatePartArea, TemplateType, Theme, Type, Updatable, User, Widget, WidgetType, WpTemplate, WpTemplatePart, };
++export type { Attachment, Base as UnstableBase, Comment, Context, GlobalStylesRevision, MenuLocation, NavMenu, NavMenuItem, Page, Plugin, Post, PostRevision, PostStatusObject, Settings, Sidebar, Taxonomy, Term, TemplatePartArea, TemplateType, Theme, Type, Updatable, User, Widget, WidgetType, WpTemplate, WpTemplatePart, };
+ /**
+  * An interface that may be extended to add types for new entities. Each entry
+  * must be a union of entity definitions adhering to the EntityInterface type.
+@@ -59,7 +60,7 @@ export type { Attachment, Base as UnstableBase, Comment, Context, GlobalStylesRe
+  * ```
+  */
+ export interface PerPackageEntityRecords<C extends Context> {
+-    core: Base<C> | Attachment<C> | Comment<C> | GlobalStylesRevision<C> | MenuLocation<C> | NavMenu<C> | NavMenuItem<C> | Page<C> | Plugin<C> | Post<C> | PostStatusObject<C> | PostRevision<C> | Settings<C> | Sidebar<C> | Taxonomy<C> | Theme<C> | User<C> | Type<C> | Widget<C> | WidgetType<C> | WpTemplate<C> | WpTemplatePart<C>;
++    core: Base<C> | Attachment<C> | Comment<C> | GlobalStylesRevision<C> | MenuLocation<C> | NavMenu<C> | NavMenuItem<C> | Page<C> | Plugin<C> | Post<C> | PostStatusObject<C> | PostRevision<C> | Settings<C> | Sidebar<C> | Taxonomy<C> | Term<C> | Theme<C> | User<C> | Type<C> | Widget<C> | WidgetType<C> | WpTemplate<C> | WpTemplatePart<C>;
+ }
+ /**
+  * A union of all known record types.
+diff --git a/node_modules/@wordpress/core-data/build-types/entity-types/term.d.ts b/node_modules/@wordpress/core-data/build-types/entity-types/term.d.ts
+new file mode 100644
+index 0000000..a63407d
+--- /dev/null
++++ b/node_modules/@wordpress/core-data/build-types/entity-types/term.d.ts
+@@ -0,0 +1,14 @@
++/**
++ * Internal dependencies
++ */
++import type { Context, ContextualField, OmitNevers } from './helpers';
++import type { BaseEntityRecords as _BaseEntityRecords } from './base-entity-records';
++declare module './base-entity-records' {
++	namespace BaseEntityRecords {
++		interface Term<C extends Context> {
++			id: number;
++			name: string;
++		}
++	}
++}
++export type Term<C extends Context = 'edit'> = OmitNevers<_BaseEntityRecords.Term<C>>;

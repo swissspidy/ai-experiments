@@ -2,7 +2,11 @@ import {
 	BlockControls,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
-import { getBlockContent, serialize } from '@wordpress/blocks';
+import {
+	type BlockInstance,
+	getBlockContent,
+	serialize,
+} from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import { ToolbarDropdownMenu } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
@@ -61,7 +65,9 @@ export function ParagraphControls( { setAttributes, clientId } ) {
 	async function write() {
 		setInProgress( true );
 
-		const postContent = serialize( [ getBlock( clientId ) ] );
+		const postContent = serialize( [
+			getBlock( clientId ) as BlockInstance,
+		] );
 
 		let context = `
 		Avoid any toxic language and be as constructive as possible.
@@ -69,7 +75,11 @@ export function ParagraphControls( { setAttributes, clientId } ) {
 
 		const session = await window.ai.languageModel.create();
 
-		if ( mostRecentPost ) {
+		if (
+			mostRecentPost &&
+			'content' in mostRecentPost &&
+			mostRecentPost.content
+		) {
 			const result = await session?.prompt(
 				`
 					You are an AI writing assistant. Your goal is to help users with writing tasks by analyzing their writing and writing instructions for generating relevant and high-quality text in the same tone. You do NOT answer questions, you simply write on behalf of a user. Focus on producing error-free and engaging writing. Do not explain your response, just provide the generated instructions.
@@ -111,7 +121,9 @@ Context:  ${ context }`
 	async function rewrite( type: string ) {
 		setInProgress( true );
 
-		const postContent = serialize( [ getBlock( clientId ) ] );
+		const postContent = serialize( [
+			getBlock( clientId ) as BlockInstance,
+		] );
 
 		let tone: AIRewriterTone = 'as-is';
 		let length: AIRewriterLength = 'as-is';
@@ -170,7 +182,9 @@ Context:  ${ context }`
 	async function summarize() {
 		setInProgress( true );
 
-		const postContent = serialize( [ getBlock( clientId ) ] );
+		const postContent = serialize( [
+			getBlock( clientId ) as BlockInstance,
+		] );
 
 		const summarizer = await window.ai.summarizer.create( {
 			sharedContext: 'A blog post',
@@ -203,7 +217,7 @@ Context:  ${ context }`
 		setInProgress( true );
 
 		try {
-			const block = getBlock( clientId );
+			const block = getBlock( clientId ) as BlockInstance;
 			const blockContent = getBlockContent( block );
 
 			const result = await translateString(
