@@ -1,5 +1,5 @@
 diff --git a/node_modules/@wordpress/editor/build-types/store/actions.d.ts b/node_modules/@wordpress/editor/build-types/store/actions.d.ts
-index ec245fc..c0da05e 100644
+index ec245fc..07b11ff 100644
 --- a/node_modules/@wordpress/editor/build-types/store/actions.d.ts
 +++ b/node_modules/@wordpress/editor/build-types/store/actions.d.ts
 @@ -217,7 +217,7 @@ export function autosave({ local, ...options }?: {
