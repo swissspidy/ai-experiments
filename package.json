@@ -35,7 +35,7 @@
 		"@types/wordpress__blocks": "^12.5.17",
 		"@wordpress/dependency-extraction-webpack-plugin": "^6.21.0",
 		"@wordpress/eslint-plugin": "^22.7.0",
-		"@wordpress/scripts": "^30.14.0",
+		"@wordpress/scripts": "^30.14.1",
 		"copy-webpack-plugin": "^13.0.0",
 		"eslint": "^8.57.0",
 		"eslint-plugin-oxlint": "^0.16.3",
