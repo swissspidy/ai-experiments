@@ -33,7 +33,7 @@
 	},
 	"types": "dist-types/index.d.ts",
 	"dependencies": {
-		"@huggingface/transformers": "^3.4.2",
+		"@huggingface/transformers": "^3.5.0",
 		"@shopify/web-worker": "^6.4.0",
 		"@wordpress/block-editor": "^14.17.0",
 		"@wordpress/blocks": "^14.2.0",
