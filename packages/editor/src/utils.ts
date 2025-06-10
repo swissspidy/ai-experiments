@@ -1,13 +1,11 @@
 export async function detectSourceLanguage(
 	textToTranslate: string
 ): Promise< string | null > {
-	const languageDetectorCapabilities =
-		// @ts-ignore
-		await window.ai.languageDetector.capabilities();
+	const availability = await LanguageDetector.availability();
 
 	// Otherwise, let's detect the source language.
-	if ( languageDetectorCapabilities.available !== 'no' ) {
-		if ( languageDetectorCapabilities.available === 'after-download' ) {
+	if ( availability !== 'unavailable' ) {
+		if ( availability !== 'available' ) {
 			// eslint-disable-next-line no-console
 			console.log(
 				'Language detection is available, but something will have to be downloaded. Hold tight!'
@@ -15,19 +13,19 @@ export async function detectSourceLanguage(
 		}
 
 		// @ts-ignore
-		const detector = await window.ai.languageDetector.create();
+		const detector = await LanguageDetector.create();
 		const [ bestResult ] = await detector.detect( textToTranslate );
 
 		if (
 			bestResult.detectedLanguage === null ||
-			bestResult.confidence < 0.4
+			( bestResult.confidence && bestResult.confidence < 0.4 )
 		) {
 			// Return null to indicate no translation should happen.
 			// It's probably mostly punctuation or something.
 			return null;
 		}
 
-		return bestResult.detectedLanguage;
+		return bestResult.detectedLanguage || null;
 	}
 
 	// If `languageDetectorCapabilities.available === "no"`, then assume the source language is the
@@ -45,7 +43,7 @@ export async function translate( content: string, targetLanguage: string ) {
 	}
 
 	// const translatorCapabilities =
-	// 	await window.ai.languageModel.capabilities();
+	// 	await LanguageModel.capabilities();
 
 	// Now we've figured out the source language. Let's translate it!
 	// Note how we can just check `translatorCapabilities.languagePairAvailable()` instead of also checking
@@ -68,7 +66,7 @@ export async function translate( content: string, targetLanguage: string ) {
 	// 	);
 	// }
 
-	const translator = await window.ai.translator.create( {
+	const translator = await Translator.create( {
 		sourceLanguage,
 		targetLanguage,
 	} );

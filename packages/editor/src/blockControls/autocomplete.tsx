@@ -106,7 +106,7 @@ export function Autocomplete( {
 			try {
 				let result = '';
 				if ( cachedSuggestion === undefined ) {
-					const session = await window.ai.languageModel.create( {
+					const session = await LanguageModel.create( {
 						signal: controller.signal,
 					} );
 

@@ -73,7 +73,7 @@ export function ParagraphControls( { setAttributes, clientId } ) {
 		Avoid any toxic language and be as constructive as possible.
 		`;
 
-		const session = await window.ai.languageModel.create();
+		const session = await LanguageModel.create();
 
 		if (
 			mostRecentPost &&
@@ -125,8 +125,8 @@ Context:  ${ context }`
 			getBlock( clientId ) as BlockInstance,
 		] );
 
-		let tone: AIRewriterTone = 'as-is';
-		let length: AIRewriterLength = 'as-is';
+		let tone: RewriterTone = 'as-is';
+		let length: RewriterLength = 'as-is';
 
 		switch ( type ) {
 			case 'rephrase':
@@ -150,7 +150,7 @@ Context:  ${ context }`
 				break;
 		}
 
-		const rewriter = await window.ai.rewriter.create( {
+		const rewriter = await Rewriter.create( {
 			sharedContext: 'A blog post',
 			tone,
 			length,
@@ -186,7 +186,7 @@ Context:  ${ context }`
 			getBlock( clientId ) as BlockInstance,
 		] );
 
-		const summarizer = await window.ai.summarizer.create( {
+		const summarizer = await Summarizer.create( {
 			sharedContext: 'A blog post',
 		} );
 

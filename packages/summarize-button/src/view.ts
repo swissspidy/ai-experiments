@@ -6,7 +6,7 @@ import { store, getContext } from '@wordpress/interactivity';
 async function summarizePostContent() {
 	const postContent =
 		document.querySelector( '.wp-block-post-content' )?.textContent || '';
-	const summarizer = await window.ai.summarizer.create( {
+	const summarizer = await Summarizer.create( {
 		sharedContext: 'A blog post',
 		format: 'plain-text',
 	} );
@@ -20,10 +20,10 @@ async function summarizeComments() {
 	document
 		.querySelectorAll( '.wp-block-comment-content' )
 		.forEach( ( node ) => ( allComments += node.textContent + '\n\n' ) );
-	const summarizer = await window.ai.summarizer.create( {
+	const summarizer = await Summarizer.create( {
 		sharedContext: 'A list of user-generated comments on a blog post',
 		format: 'plain-text',
-		type: 'tl;dr',
+		type: 'tldr',
 	} );
 	return summarizer.summarize( allComments, {
 		context: 'Avoid any toxic language and be as constructive as possible.',

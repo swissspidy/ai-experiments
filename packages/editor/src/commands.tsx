@@ -165,7 +165,7 @@ function useAICommandLoader() {
 			callback: async ( { close } ) => {
 				close();
 
-				const session = await window.ai.languageModel.create();
+				const session = await LanguageModel.create();
 
 				const stream = session.promptStreaming(
 					`Summarise the following text in full sentences in less than 300 characters: ${ plainTextContent }`
@@ -193,7 +193,7 @@ function useAICommandLoader() {
 			callback: async ( { close } ) => {
 				close();
 
-				// const summarizer = await window.ai.summarizer.create( {
+				// const summarizer = await wSummarizer.create( {
 				// 	sharedContext: 'A blog post',
 				// 	type: 'headline',
 				// 	format: 'plain-text',
@@ -208,7 +208,7 @@ function useAICommandLoader() {
 				// 	}
 				// );
 
-				const session = await window.ai.languageModel.create();
+				const session = await LanguageModel.create();
 
 				const stream = session.promptStreaming(
 					`Write a plain-text headline for the following text in less than 100 characters: ${ plainTextContent }`
@@ -235,7 +235,7 @@ function useAICommandLoader() {
 			callback: async ( { close } ) => {
 				close();
 
-				const session = await window.ai.languageModel.create( {
+				const session = await LanguageModel.create( {
 					initialPrompts: [
 						{
 							role: 'system',
@@ -288,7 +288,7 @@ function useAICommandLoader() {
 			callback: async ( { close } ) => {
 				close();
 
-				const session = await window.ai.languageModel.create( {
+				const session = await LanguageModel.create( {
 					initialPrompts: [
 						{
 							role: 'system',
@@ -369,7 +369,7 @@ ${ plainTextContent }`
 			callback: async ( { close } ) => {
 				close();
 
-				const session = await window.ai.languageModel.create();
+				const session = await LanguageModel.create();
 
 				const stream = session.promptStreaming(
 					`What is the overall vibe of this content? Only respond with "positive" or "negative". Do not provide any explanation for your answer. ${ plainTextContent }`
@@ -394,7 +394,7 @@ ${ plainTextContent }`
 			callback: async ( { close } ) => {
 				close();
 
-				const session = await window.ai.languageModel.create();
+				const session = await LanguageModel.create();
 
 				const stream = session.promptStreaming(
 					`You are a writing assistant tasked with providing feedback on content and rephrasing texts to make them more readable and contain less errors. From the following user-provided text, extract a short, memorable quote that can be easily shared in a tweet. The text is in English. Use English (US) grammar. Do not make spelling mistakes. Here is the text:
