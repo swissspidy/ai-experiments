@@ -7,4 +7,5 @@ registerFormatType( 'ai-experiments/autocomplete', {
 	className: 'aiwp-autocomplete',
 	interactive: false,
 	edit: () => null,
+	object: false,
 } );
