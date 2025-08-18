@@ -36,7 +36,7 @@
 		"@wordpress/dependency-extraction-webpack-plugin": "^6.28.0",
 		"@wordpress/eslint-plugin": "^22.14.0",
 		"@wordpress/scripts": "^30.21.0",
-		"copy-webpack-plugin": "^13.0.0",
+		"copy-webpack-plugin": "^13.0.1",
 		"eslint": "^8.57.0",
 		"eslint-plugin-oxlint": "^1.11.1",
 		"eslint-plugin-react": "^7.37.5",
