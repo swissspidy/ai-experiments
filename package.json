@@ -41,7 +41,7 @@
 		"eslint-plugin-oxlint": "^1.19.0",
 		"eslint-plugin-react": "^7.37.5",
 		"oxlint": "^1.19.0",
-		"patch-package": "^8.0.0",
+		"patch-package": "^8.0.1",
 		"prettier": "npm:wp-prettier@^3.0.3",
 		"typescript": "^5.9.3",
 		"webpack": "^5.102.0",
