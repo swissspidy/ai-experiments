@@ -28,7 +28,7 @@
 	"devDependencies": {
 		"@shopify/web-worker": "^6.4.0",
 		"@testing-library/jest-dom": "^6.9.1",
-		"@testing-library/react": "^16.3.1",
+		"@testing-library/react": "^16.3.2",
 		"@types/dom-chromium-ai": "^0.0.13",
 		"@types/jest": "^30.0.0",
 		"@types/node": "^25.0.9",
