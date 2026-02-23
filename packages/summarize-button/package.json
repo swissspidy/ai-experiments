@@ -28,8 +28,8 @@
 	"types": "dist-types/index.d.ts",
 	"dependencies": {
 		"@wordpress/block-editor": "^15.11.0",
-		"@wordpress/blocks": "^15.1.0",
-		"@wordpress/i18n": "^6.11.0",
-		"@wordpress/interactivity": "^6.32.0"
+		"@wordpress/blocks": "^15.13.0",
+		"@wordpress/i18n": "^6.13.0",
+		"@wordpress/interactivity": "^6.40.0"
 	}
 }
