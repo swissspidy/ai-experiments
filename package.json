@@ -44,7 +44,7 @@
 		"patch-package": "^8.0.1",
 		"prettier": "npm:wp-prettier@^3.0.3",
 		"typescript": "^6.0.2",
-		"webpack": "^5.104.1",
+		"webpack": "^5.106.1",
 		"webpack-cli": "^6.0.1",
 		"webpack-virtual-modules": "^0.6.2"
 	},
