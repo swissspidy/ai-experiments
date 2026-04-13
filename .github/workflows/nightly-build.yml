@@ -100,7 +100,7 @@ jobs:
               uses: actions/upload-pages-artifact@v4
 
             - name: Delete existing release
-              uses: actions/github-script@v8
+              uses: actions/github-script@v9
               if: ${{ env.CURRENT_TAG != 'nightly' }}
               with:
                   github-token: ${{secrets.GITHUB_TOKEN}}
